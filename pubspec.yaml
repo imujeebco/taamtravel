@@ -56,7 +56,10 @@ dependencies:
   country_picker: ^2.0.23
   customizable_counter: ^1.0.4
   flutter_launcher_icons: ^0.11.0
-  rename: ^3.0.1 
+  rename: ^3.0.1
+  carousel_slider: ^4.2.1
+  readmore: ^2.1.0
+  rating_summary: ^1.0.2+1
 
 
 dev_dependencies:
