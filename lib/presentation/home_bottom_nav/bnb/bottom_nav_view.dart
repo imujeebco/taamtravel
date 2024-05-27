@@ -14,6 +14,7 @@ import 'package:travel_app/presentation/profile/view/user_profile_screen.dart';
 
 import '../../../app/data/data_controller.dart';
 import '../../auth/view/login_screen.dart';
+import '../nav_tabs/hotel_view.dart';
 
 class BottomNavScreen extends StatefulWidget {
   BottomNavScreen({this.fromDetails = false, super.key, this.cabinClass});
@@ -38,7 +39,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   setArgs() {
     // print("Cabin Class: ${widget.cabinClass}");
     tabsList = [
-      // const HomeScreen(),
+      HotelScreen(cabinClass: widget.cabinClass),
       SearchScreen(cabinClass: widget.cabinClass),
       const BookingScreen(),
       // const CheckInScreen(),
@@ -55,14 +56,14 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   onSelectTab(int index) => setState(() => selectedIndex = index);
 
   var tabsLables = [
-    // 'Home',
-    'Search',
+    'Hotel Search',
+    'Flight Search',
     'My Bookings',
     // 'Check-Ins',
     'User Profile',
   ];
   var tabsIcons = <Widget>[
-    // const Icon(Icons.home),
+    const Icon(Icons.home),
     const Icon(Icons.airplanemode_active_rounded),
     const Icon(Icons.airplane_ticket_rounded),
     // const Icon(Icons.location_on),
@@ -70,7 +71,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   ];
 
   List<Map<String, dynamic>> appDrawerData = [
-    // {'Icon': Icons.home, 'Name': 'Home'},
+    {'Icon': Icons.home, 'Name': 'Home'},
     {'Icon': Icons.local_airport_rounded, 'Name': 'Book a flight'},
     {'Icon': Icons.today_rounded, 'Name': 'My Bookings'},
     // {'Icon': Icons.location_on_rounded, 'Name': 'Check-Ins'},

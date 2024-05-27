@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   //APP Colors ---------------------------------------------------------------
-  // static const Color appColorPrimary = Color(0xFF00B3F0); 72bf44
   static const Color appColorPrimary = Color(0xFF72bf44);
 
-  static const Color appColorSplashBG = Color(0xFF171D25);
+  static const Color appColorSplashBG = Color(0xFFFFFFFF);
   static const Color appColorSecondary = Color(0xFFFFCC00);
   static const Color appColorPrimaryDark = Color(0xFF242f3d); // bnb bg color
   static const Color appColorAccent = Color(0xFFf8fbff); // home bg color
