@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_app/app/configs/app_colors.dart';
-import 'package:travel_app/presentation/splash_screen/splash_screen.dart';
+import 'package:travel_app/airline/splash_screen/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,14 +20,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Airline Trade Association',
+      title: 'Taam Travel',
       debugShowCheckedModeBanner: false,
       defaultTransition: Transition.cupertino,
       transitionDuration: Duration(milliseconds: 800),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.appColorPrimary),
         useMaterial3: true,
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         fontFamily: GoogleFonts.poppins().fontFamily,
       ),
