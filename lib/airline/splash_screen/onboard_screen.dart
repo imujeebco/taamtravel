@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:travel_app/app/utils/custom_widgets/common_text.dart';
 import 'package:travel_app/app/utils/custom_widgets/custom_button.dart';
-import 'package:travel_app/airline/auth/view/login_screen.dart';
 
 import '../home_bottom_nav/bnb/bottom_nav_view.dart';
 
@@ -40,18 +39,16 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           children: [
             buildPage(
                 color: Color(0xFFd7fada),
-                urlImage: 'assets/images/onboard_background.png',
-                title: "Search Flight",
+                urlImage: 'assets/images/hotel.jpg',
+                title: "Search Hotel",
                 colort: Colors.white,
-                subtitle:
-                    'Embark on your next adventure or business trip with ease using our Search Flight feature.'),
+                subtitle: 'Embark on your next adventure or business trip with ease using our Search Hotel feature.'),
             buildPage(
                 color: Color(0xFFd7fada),
-                urlImage: 'assets/images/onboard_background.png',
+                urlImage: 'assets/images/airline.jpg',
                 title: "Book Tickets",
                 colort: Colors.white,
-                subtitle:
-                    'Start your journey here and let us take the hassle out of flight booking.'),
+                subtitle: 'Start your journey here and let us take the hassle out of flight booking.'),
           ],
         ),
       ),
@@ -71,8 +68,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           Container(
             decoration: BoxDecoration(
                 // color: color,
-                image: DecorationImage(
-                    image: AssetImage(urlImage), fit: BoxFit.cover)),
+                image: DecorationImage(image: AssetImage(urlImage), fit: BoxFit.cover)),
           ),
           Container(
             decoration: BoxDecoration(
@@ -80,7 +76,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
               colors: [
-                Colors.blue.withOpacity(0.5),
+                Colors.green.withOpacity(0.2),
                 Colors.black.withOpacity(0.5),
               ],
             )),
@@ -123,15 +119,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   dotColor: Colors.white54,
                   strokeWidth: 5,
                 ),
-                onDotClicked: (index) => controller.animateToPage(index,
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.easeInOut),
+                onDotClicked: (index) => controller.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.easeInOut),
               ),
               Spacer(),
               CustomButton(
                   onPress: () async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
                     // Get.to(() => LoginScreen());
                     Get.to(() => BottomNavScreen());
                     prefs.setBool('isOnboardedStatus', true);
@@ -141,8 +134,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   ? TextButton(onPressed: () {}, child: CommonText(text: ""))
                   : TextButton(
                       onPressed: () async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
                         // Get.to(() => LoginScreen());
                         Get.to(() => BottomNavScreen());
                         prefs.setBool('isOnboardedStatus', true);
