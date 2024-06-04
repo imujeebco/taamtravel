@@ -25,9 +25,13 @@ class MyApp extends StatelessWidget {
       defaultTransition: Transition.cupertino,
       transitionDuration: Duration(milliseconds: 800),
       theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          backgroundColor: AppColors.appColorAccent,
+        ),
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.appColorPrimary),
         useMaterial3: true,
         primarySwatch: Colors.green,
+        scaffoldBackgroundColor: AppColors.appColorAccent,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         fontFamily: GoogleFonts.poppins().fontFamily,
       ),

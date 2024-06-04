@@ -26,16 +26,19 @@ class BookingScreen extends StatefulWidget {
 
 class _BookingScreenState extends State<BookingScreen> {
   final DataController dataController = Get.put(DataController());
-  final BookingHistoryController bookingHistoryController = Get.put(BookingHistoryController());
+  final BookingHistoryController bookingHistoryController =
+      Get.put(BookingHistoryController());
   final Rx<BookingHistoryModel> bookingHistoryModel = BookingHistoryModel().obs;
-  final RxList<BookingHistoryModel> bookingHistoryList = <BookingHistoryModel>[].obs;
+  final RxList<BookingHistoryModel> bookingHistoryList =
+      <BookingHistoryModel>[].obs;
   final RxBool isLoading = false.obs;
   String? formattedDate = "";
   String? formattedTime = "";
 
   String formatDate(String dateString) {
     DateTime dateTime = DateTime.parse(dateString);
-    String formattedDate = "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
+    String formattedDate =
+        "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}";
 
     return formattedDate;
   }
@@ -45,7 +48,8 @@ class _BookingScreenState extends State<BookingScreen> {
     DateTime dateTime = DateTime.parse(dateTimeString);
 
     // Format the time
-    String formattedTime = "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
+    String formattedTime =
+        "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
 
     return formattedTime;
   }
@@ -68,7 +72,6 @@ class _BookingScreenState extends State<BookingScreen> {
   Widget build(BuildContext context) {
     HeightWidth(context);
     return Scaffold(
-        backgroundColor: AppColors.appColorAccent,
         body: dataController.myLoggedIn.value
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -86,14 +89,17 @@ class _BookingScreenState extends State<BookingScreen> {
                           child: CircularProgressIndicator(),
                         );
                       } else {
-                        return bookingHistoryController.bookingHistoryList.isEmpty
+                        return bookingHistoryController
+                                .bookingHistoryList.isEmpty
                             ? Center(
                                 child: Text('No Bookings Available'),
                               )
                             : ListView.builder(
-                                itemCount: bookingHistoryController.bookingHistoryList.length,
+                                itemCount: bookingHistoryController
+                                    .bookingHistoryList.length,
                                 itemBuilder: (context, index) {
-                                  var bookings = bookingHistoryController.bookingHistoryList[index];
+                                  var bookings = bookingHistoryController
+                                      .bookingHistoryList[index];
                                   return Padding(
                                     padding: const EdgeInsets.all(20.0),
                                     child: DottedBorder(
@@ -101,22 +107,28 @@ class _BookingScreenState extends State<BookingScreen> {
                                       strokeWidth: 1,
                                       color: AppColors.appColorPrimary,
                                       child: Container(
-                                        padding: EdgeInsets.fromLTRB(15.0, 15, 15, 30),
+                                        padding: EdgeInsets.fromLTRB(
+                                            15.0, 15, 15, 30),
                                         margin: const EdgeInsets.all(20.0),
                                         // height: h * 0.43,
-                                        decoration: BoxDecoration(color: Colors.white),
+                                        decoration:
+                                            BoxDecoration(color: Colors.white),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             // 1st  FROM TO ------------------------------------------------
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Row(
                                                   children: [
                                                     CommonText(text: "ID "),
                                                     CommonText(
-                                                      text: " ${bookings.bookingId}",
+                                                      text:
+                                                          " ${bookings.bookingId}",
                                                       weight: FontWeight.bold,
                                                     )
                                                   ],
@@ -125,7 +137,8 @@ class _BookingScreenState extends State<BookingScreen> {
                                                   children: [
                                                     CommonText(text: "PNR"),
                                                     CommonText(
-                                                      text: " ${bookings.parentPnr}",
+                                                      text:
+                                                          " ${bookings.parentPnr}",
                                                       weight: FontWeight.bold,
                                                     )
                                                   ],
@@ -134,30 +147,42 @@ class _BookingScreenState extends State<BookingScreen> {
                                             ),
                                             0.02.ph,
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 FromToFlightWidget(
-                                                  date: formatDate(bookings.departureDateTime.toString()),
-                                                  time: formatTime(bookings.departureDateTime.toString()),
+                                                  date: formatDate(bookings
+                                                      .departureDateTime
+                                                      .toString()),
+                                                  time: formatTime(bookings
+                                                      .departureDateTime
+                                                      .toString()),
                                                   city: '${bookings.departure}',
                                                 ),
                                                 Column(
                                                   children: [
                                                     Icon(
                                                       FontAwesomeIcons.plane,
-                                                      color: AppColors.appColorPrimary,
+                                                      color: AppColors
+                                                          .appColorPrimary,
                                                       size: 20.0,
                                                     ),
                                                     0.01.ph,
                                                     CommonText(
-                                                      text: bookings.tripType.toString(),
+                                                      text: bookings.tripType
+                                                          .toString(),
                                                       fontSize: 10.0,
                                                     )
                                                   ],
                                                 ),
                                                 FromToFlightWidget(
-                                                  date: formatDate(bookings.arrivalDateTime.toString()),
-                                                  time: formatTime(bookings.arrivalDateTime.toString()),
+                                                  date: formatDate(bookings
+                                                      .arrivalDateTime
+                                                      .toString()),
+                                                  time: formatTime(bookings
+                                                      .arrivalDateTime
+                                                      .toString()),
                                                   city: '${bookings.arrival}',
                                                 ),
                                               ],
@@ -174,49 +199,60 @@ class _BookingScreenState extends State<BookingScreen> {
                                             // ),
                                             // 0.02.ph,
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 CommonText(
                                                   text: 'Fare',
                                                   fontSize: 11,
                                                 ),
                                                 CommonText(
-                                                  text: '\$ ${bookings.ticketAmount}',
+                                                  text:
+                                                      '\$ ${bookings.ticketAmount}',
                                                   fontSize: 11,
                                                 ),
                                               ],
                                             ),
                                             0.02.ph,
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 CommonText(
                                                   text: 'Taxes and Fees',
                                                   fontSize: 11,
                                                 ),
                                                 CommonText(
-                                                  text: '\$ ${bookings.taxAmount}',
+                                                  text:
+                                                      '\$ ${bookings.taxAmount}',
                                                   fontSize: 11,
                                                 ),
                                               ],
                                             ),
                                             0.02.ph,
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 CommonText(
                                                   text: 'Agency Charges',
                                                   fontSize: 11,
                                                 ),
                                                 CommonText(
-                                                  text: '\$ ${bookings.agencyMarkup}',
+                                                  text:
+                                                      '\$ ${bookings.agencyMarkup}',
                                                   fontSize: 11,
                                                 ),
                                               ],
                                             ),
                                             0.02.ph,
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 CommonText(
                                                   text: 'Other Charges',
@@ -234,7 +270,9 @@ class _BookingScreenState extends State<BookingScreen> {
 
                                             0.02.ph,
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 CommonText(
                                                   text: 'Total Charges',
@@ -242,7 +280,8 @@ class _BookingScreenState extends State<BookingScreen> {
                                                   weight: FontWeight.w700,
                                                 ),
                                                 CommonText(
-                                                  text: '\$ ${bookings.totalAmount}',
+                                                  text:
+                                                      '\$ ${bookings.totalAmount}',
                                                   fontSize: 11,
                                                   weight: FontWeight.w700,
                                                 ),
@@ -251,10 +290,14 @@ class _BookingScreenState extends State<BookingScreen> {
                                             0.02.ph,
                                             Divider(),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 CommonText(text: "Status"),
-                                                CommonText(text: "${bookings.status}", weight: FontWeight.w500),
+                                                CommonText(
+                                                    text: "${bookings.status}",
+                                                    weight: FontWeight.w500),
                                               ],
                                             ),
                                             Divider(),
@@ -270,11 +313,18 @@ class _BookingScreenState extends State<BookingScreen> {
                                                     showDragHandle: true,
                                                     useSafeArea: true,
                                                     context: context,
-                                                    builder: (BuildContext context) {
+                                                    builder:
+                                                        (BuildContext context) {
                                                       return SingleChildScrollView(
                                                         child: Container(
-                                                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                                            child: BottomSheetWidget(pnr: "${bookings.parentPnr}")),
+                                                            padding: EdgeInsets.only(
+                                                                bottom: MediaQuery.of(
+                                                                        context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                            child: BottomSheetWidget(
+                                                                pnr:
+                                                                    "${bookings.parentPnr}")),
                                                       );
                                                     },
                                                   );
@@ -327,7 +377,8 @@ class GotoLoginWidget extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: CommonText(
-              text: "You will find great deals with reasonable fares for your desired destinations with Taam Travel",
+              text:
+                  "You will find great deals with reasonable fares for your desired destinations with Taam Travel",
               weight: FontWeight.w300,
               textAlign: TextAlign.center,
               fontSize: 15),
@@ -361,7 +412,8 @@ class BottomSheetWidget extends StatefulWidget {
 
 class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   TextEditingController emailController = TextEditingController();
-  final ShareTicketController shareTicketController = Get.put(ShareTicketController());
+  final ShareTicketController shareTicketController =
+      Get.put(ShareTicketController());
   final RxBool isLoading = false.obs;
 
   @override
@@ -380,7 +432,10 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                CommonText(text: "Share Ticket", weight: FontWeight.w400, fontSize: 18),
+                CommonText(
+                    text: "Share Ticket",
+                    weight: FontWeight.w400,
+                    fontSize: 18),
                 SizedBox(height: 5.0),
                 Container(
                   decoration: BoxDecoration(
@@ -404,13 +459,24 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                     width: w,
                     text: 'Share',
                     onPress: () {
-                      RegExp emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                      RegExp emailRegExp =
+                          RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                       if (emailController.text.trim().isEmpty) {
-                        Get.showSnackbar(gradientSnackbar("Error", "Email field is empty", AppColors.orange, Icons.warning_rounded));
-                      } else if (!emailRegExp.hasMatch(emailController.text.trim())) {
-                        Get.showSnackbar(gradientSnackbar("Error", "Please type a valid email", AppColors.orange, Icons.warning_rounded));
+                        Get.showSnackbar(gradientSnackbar(
+                            "Error",
+                            "Email field is empty",
+                            AppColors.orange,
+                            Icons.warning_rounded));
+                      } else if (!emailRegExp
+                          .hasMatch(emailController.text.trim())) {
+                        Get.showSnackbar(gradientSnackbar(
+                            "Error",
+                            "Please type a valid email",
+                            AppColors.orange,
+                            Icons.warning_rounded));
                       } else {
-                        shareTicketController.shareTicket(widget.pnr.toString(), emailController.text.trim());
+                        shareTicketController.shareTicket(
+                            widget.pnr.toString(), emailController.text.trim());
                       }
                     })
               ],

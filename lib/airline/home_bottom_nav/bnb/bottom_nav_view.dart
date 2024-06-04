@@ -14,7 +14,7 @@ import 'package:travel_app/airline/profile/view/user_profile_screen.dart';
 
 import '../../../app/data/data_controller.dart';
 import '../../auth/view/login_screen.dart';
-import '../nav_tabs/hotel_view.dart';
+import '../../../hotel/view/hotel_view.dart';
 
 class BottomNavScreen extends StatefulWidget {
   BottomNavScreen({this.fromDetails = false, super.key, this.cabinClass});
