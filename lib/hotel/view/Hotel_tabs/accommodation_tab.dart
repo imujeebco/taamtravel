@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable, camel_case_types
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:travel_app/app/configs/app_size_config.dart';
@@ -9,8 +10,10 @@ import 'package:travel_app/app/utils/custom_widgets/custom_toast.dart';
 import 'package:travel_app/app/utils/custom_widgets/gradient_snackbar.dart';
 
 import 'package:intl/intl.dart';
+import '../../../airline/home_bottom_nav/controller/search_controller.dart';
 import '../../../app/configs/app_colors.dart';
-import '../../../airline/home_bottom_nav/views/search_hotels.dart';
+import '../../../app/utils/custom_widgets/custom_outline_button_Wicon.dart';
+import '../../../app/utils/custom_widgets/custom_textfield.dart';
 
 class AccommodationTabView extends StatefulWidget {
   String? toCity;
@@ -27,27 +30,50 @@ class _AccommodationTabViewState extends State<AccommodationTabView> {
   String? _cabinClass;
   String? selectedCabin;
   var selectedTraveller = 'Adult';
-  int selectedChildAge1 = 2;
-  int selectedChildAge2 = 2;
-  int selectedChildAge3 = 2;
-  int selectedChildAge4 = 2;
-  int selectedCIntantAge1 = 0;
-  int selectedCIntantAge2 = 0;
-  int selectedCIntantAge3 = 0;
-  int selectedCIntantAge4 = 0;
-  var selectedInfantAge = '0-1';
+  // int selectedChildAge1 = 2;
+  // int selectedChildAge2 = 2;
+  // int selectedChildAge3 = 2;
+  // int selectedChildAge4 = 2;
+  // int selectedCIntantAge1 = 0;
+  // int selectedCIntantAge2 = 0;
+  // int selectedCIntantAge3 = 0;
+  // int selectedCIntantAge4 = 0;
+  // var selectedInfantAge = '0-1';
   // TextEditingController adultController = TextEditingController(text: "1");
   // TextEditingController childController = TextEditingController(text: "0");
   // TextEditingController infantController = TextEditingController(text: "0");
-  int roomCount = 1;
-  int adultCount = 1;
-  int childCount = 0;
-  int infantCount = 0;
+  // int adultCount = 1;
+  // int childCount = 0;
+  // int infantCount = 0;
+  //
+  final SearchController1 searchController = Get.put(SearchController1());
+  final FocusNode _focusNode = FocusNode();
+  TextEditingController fromController = TextEditingController();
+  TextEditingController toController = TextEditingController();
+  bool isValidForm = false;
+  final _formkey = GlobalKey<FormState>();
+  int selectedTabIndex = 0;
+  String? toCity = "";
+  String? toCode = "";
+  String? toCountry = "";
+  List<int> adultCountList = [1, 1, 1, 1];
+  List<int> childCountList = [0, 0, 0, 0];
+  List<int> infantCountList = [0, 0, 0, 0];
+  List<Map<String, dynamic>> roomList = [];
+  Map<String, dynamic> roomData = {
+    "Adults": 1,
+    "ChildrenAndInfant": 0,
+    "ChildrenAndInfantAges": []
+  };
+  Map<String, dynamic> resMap = {};
+  onTabSelect(int index) => setState(() => selectedTabIndex = index);
 
   @override
   void initState() {
     setArgs();
     super.initState();
+    roomList.add(
+        {"Adults": 1, "ChildrenAndInfant": 0, "ChildrenAndInfantAges": []});
   }
 
   setArgs() {
@@ -56,21 +82,7 @@ class _AccommodationTabViewState extends State<AccommodationTabView> {
     print("Return Tab Cabin: ${widget.cabinClass}");
   }
 
-  var travellerList = [
-    'Adult',
-    'Child',
-    'Infant',
-  ];
-  // var childAgeList = [
-  //   '3-6',
-  //   '6-9',
-  //   '9-12',
-  // ];
-  // var infantAgeList = [
-  //   '0-1',
-  //   '1-2',
-  //   '2-3',
-  // ];
+  var travellerList = ['Adult', 'Child', 'Infant'];
 
   String? arriveDate = "Select Date";
   String? departDate = "Select Date";
@@ -125,218 +137,360 @@ class _AccommodationTabViewState extends State<AccommodationTabView> {
   @override
   Widget build(BuildContext context) {
     HeightWidth(context);
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // flight time widgets --------------------------------
-
-            // ElevatedButton(
-            //   onPressed: () => _selectArriveDate(context),
-            //   child: Text('Select Date'),
-            // ),
-
-            // ElevatedButton(
-            //   onPressed: () => _selectDepartDate(context),
-            //   child: Text('Select Date'),
-            // ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                InkWell(
-                  onTap: () {
-                    _selectDepartDate(context);
+                // Search City widgets --------------------------------
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
+                      color: AppColors.appColorPrimary,
+                    ),
+                    0.04.pw,
+                    SizedBox(
+                      width: w * 0.8,
+                      child: CustomTextField(
+                          icon: toController.text.isEmpty
+                              ? SizedBox.shrink()
+                              : Icon(Icons.close_rounded),
+                          onTap: () {
+                            toController.clear();
+                          },
+                          textEditingController: toController,
+                          hintText: 'Search City',
+                          labelText: 'To',
+                          onChanged: (value) {
+                            searchController
+                                .fetchSearch2(toController.text.trim());
+                          },
+                          validator: (inputValue) {
+                            if (inputValue!.isEmpty) {
+                              return "Search City";
+                            }
+                            return null;
+                          }),
+                    ),
+                  ],
+                ),
+                Obx(
+                  () {
+                    return searchController.mySearch2 == ""
+                        ? Container()
+                        : Container(
+                            height: 250,
+                            margin: EdgeInsets.only(left: 20),
+                            decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.05),
+                                borderRadius: BorderRadius.circular(15)),
+                            child: searchController
+                                            .searchModel.value.airports !=
+                                        null &&
+                                    searchController
+                                        .searchModel.value.airports!.isNotEmpty
+                                ? ListView.builder(
+                                    itemCount: searchController
+                                        .searchModel.value.airports!.length,
+                                    itemBuilder: (context, index) {
+                                      final airport = searchController
+                                          .searchModel.value.airports![index];
+                                      return ListTile(
+                                        onTap: () {
+                                          setState(() {
+                                            toController.text =
+                                                "${airport.city}, ${airport.country}";
+                                            toCode = airport.code.toString();
+                                            toCity = airport.city.toString();
+                                            toCountry =
+                                                airport.country.toString();
+                                            searchController.fetchSearch2("");
+                                          });
+                                        },
+                                        title: Text(airport.city),
+                                        subtitle: Text(airport.country),
+                                      );
+                                    },
+                                  )
+                                : Center(
+                                    child: Text("No city found"),
+                                  ),
+                          );
                   },
-                  child: FlightTimeWidget(
-                    type: 'Check-in',
-                    date: '$departDate',
+                ),
+                //-------------------- Checkin Checkout Date
+                0.04.ph,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        _selectDepartDate(context);
+                      },
+                      child: FlightTimeWidget(
+                          type: 'Check-in', date: '$departDate'),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        departDate == "Select Date"
+                            ? MyToast.snackToast("Select DEPARTURE First", 0)
+                            : _selectArriveDate(context);
+                      },
+                      child: FlightTimeWidget(
+                        type: 'Check-out',
+                        date: '$arriveDate',
+                      ),
+                    ),
+                  ],
+                ),
+                // Occupants ------------------------------------
+                0.04.ph,
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: roomList.length,
+                    itemBuilder: (context, index) {
+                      return DottedBorder(
+                        dashPattern: [10, 8],
+                        strokeWidth: 1,
+                        color: AppColors.appColorPrimaryDark,
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      CommonText(
+                                          text: 'Occupants', fontSize: 12.0),
+                                      CommonText(
+                                          text: 'Room #${index + 1}',
+                                          fontSize: 15.0,
+                                          weight: FontWeight.w500),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  index == 0
+                                      ? SizedBox.shrink()
+                                      : InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              roomList.removeAt(index);
+                                              childCountList[index] = 0;
+                                              infantCountList[index] = 0;
+                                            });
+                                          },
+                                          child: Image(
+                                              height: 20,
+                                              width: 20,
+                                              image: AssetImage(
+                                                  "assets/icons/delete.png")),
+                                        )
+                                ],
+                              ),
+                              Divider(),
+                              Counter(
+                                  title: "Adult",
+                                  onInc: () {
+                                    setState(() {
+                                      if (roomList[index]["Adults"] < 4) {
+                                        roomList[index]["Adults"]++;
+                                      }
+                                    });
+                                  },
+                                  onDec: () {
+                                    setState(() {
+                                      if (roomList[index]["Adults"] > 1) {
+                                        roomList[index]["Adults"]--;
+                                      }
+                                      if (childCountList[index] >
+                                          roomList[index]["Adults"]) {
+                                        childCountList[index]--;
+                                      }
+                                      if (infantCountList[index] >
+                                          roomList[index]["Adults"]) {
+                                        infantCountList[index]--;
+                                      }
+                                    });
+                                  },
+                                  count: roomList[index]["Adults"]),
+                              //
+                              0.01.ph,
+                              //
+                              Counter(
+                                  title: "Child",
+                                  onInc: () {
+                                    setState(() {
+                                      if (childCountList[index] <
+                                          roomList[index]["Adults"]) {
+                                        childCountList[index]++;
+                                        roomList[index]["ChildrenAndInfant"] =
+                                            childCountList[index] +
+                                                infantCountList[index];
+                                      }
+                                    });
+                                  },
+                                  onDec: () {
+                                    setState(() {
+                                      if (childCountList[index] > 0) {
+                                        childCountList[index]--;
+                                        roomList[index]["ChildrenAndInfant"] =
+                                            childCountList[index] +
+                                                infantCountList[index];
+                                      }
+                                    });
+                                  },
+                                  count: childCountList[index]),
+                              //
+                              0.01.ph,
+                              //
+                              Counter(
+                                  title: "Infant",
+                                  onInc: () {
+                                    setState(() {
+                                      if (infantCountList[index] <
+                                          roomList[index]["Adults"]) {
+                                        infantCountList[index]++;
+                                        roomList[index]["ChildrenAndInfant"] =
+                                            childCountList[index] +
+                                                infantCountList[index];
+                                      }
+                                    });
+                                  },
+                                  onDec: () {
+                                    setState(() {
+                                      if (infantCountList[index] > 0) {
+                                        infantCountList[index]--;
+                                        roomList[index]["ChildrenAndInfant"] =
+                                            childCountList[index] +
+                                                infantCountList[index];
+                                      }
+                                    });
+                                  },
+                                  count: infantCountList[index]),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                0.04.ph,
+                Align(
+                  alignment: Alignment.center,
+                  child: Outline_button_icon(
+                    width: double.infinity,
+                    height: 35,
+                    onPress: () {
+                      _addMore();
+                    },
+                    iconPath: "assets/icons/key_room.png",
+                    text: "Add Room",
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    departDate == "Select Date"
-                        ? MyToast.snackToast("Select DEPARTURE First", 0)
-                        : _selectArriveDate(context);
+                // SizedBox(
+                //   width: w,
+                //   child: DropdownButton(
+                //       isDense: true,
+                //       isExpanded: true,
+                //       icon: Icon(Icons.arrow_drop_down),
+                //       value: selectedTraveller,
+                //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.0),
+                //       items: travellerList.map((String item) {
+                //         return DropdownMenuItem(
+                //             value: item, child: CommonText(text: item));
+                //       }).toList(),
+                //       onChanged: (String? val) {
+                //         setState(() => selectedTraveller = val!);
+                //       }),
+                // ),
+                // Cabin Class  ---------------------------------
+                // 0.04.ph,
+                // CommonText(text: 'CABIN CLASS', fontSize: 12.0),
+                //
+                // SizedBox(
+                //   width: w,
+                //   child: DropdownButton(
+                //       isDense: true,
+                //       isExpanded: true,
+                //       icon: Icon(Icons.arrow_drop_down),
+                //       value: selectedCabin,
+                //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.0),
+                //       items: cabinList.map((String item) {
+                //         return DropdownMenuItem(
+                //             value: item, child: CommonText(text: item));
+                //       }).toList(),
+                //       onChanged: (String? val) {
+                //         setState(() => selectedCabin = val!);
+                //       }),
+                // ),
+                // Search Flight Button -----------------------------------
+                // Spacer(),
+                0.04.ph,
+                CustomButton(
+                  height: 40,
+                  width: w,
+                  text: 'Search Hotels',
+                  onPress: () {
+                    resMap["Checkin"] = departDate;
+                    resMap["Checkout"] = arriveDate;
+                    resMap["City"] = toCode;
+                    resMap["Passengers"] = roomList;
+
+                    print("Response Map: $resMap");
+
+                    if (widget.toCity == "" ||
+                        departDate == "Select Date" ||
+                        departDate == "" ||
+                        arriveDate == "Select Date" ||
+                        arriveDateForm == "") {
+                      Get.showSnackbar(gradientSnackbar(
+                          "Incomplete Form",
+                          "Please fill the form correctly",
+                          AppColors.orange,
+                          Icons.warning_rounded));
+                    } else {
+                      // Get.to(() => SearchHotelScreen(
+                      //       cabinClass: widget.cabinClass.toString(),
+                      //       traveller: selectedTraveller.toString(),
+                      //       adultCount: adultCount,
+                      //       childCount: childCount,
+                      //       infantCount: infantCount,
+                      //       toCity: widget.toCity.toString(),
+                      //       fromCity: 'NBO',
+                      //       arriveDate: arriveDateForm.toString(),
+                      //       departDate: departDateForm.toString(),
+                      //       tripType: tripType.toString(),
+                      //       //
+                      //       child1age: selectedChildAge1,
+                      //       child2age: selectedChildAge2,
+                      //       child3age: selectedChildAge3,
+                      //       child4age: selectedChildAge4,
+                      //       //
+                      //       infant1age: selectedCIntantAge1,
+                      //       infant2age: selectedCIntantAge2,
+                      //       infant3age: selectedCIntantAge3,
+                      //       infant4age: selectedCIntantAge4,
+                      //       //
+                      //     ));
+                    }
                   },
-                  child: FlightTimeWidget(
-                    type: 'Check-out',
-                    date: '$arriveDate',
-                  ),
                 ),
+                0.04.ph,
               ],
             ),
-
-            // Traveller ------------------------------------
-            0.04.ph,
-            CommonText(text: 'Occupants', fontSize: 12.0),
-
-            Counter(
-                title: "Adult",
-                onInc: () {
-                  setState(() {
-                    if (adultCount < 4) {
-                      adultCount++;
-                    }
-                  });
-                },
-                onDec: () {
-                  setState(() {
-                    if (adultCount > 1) {
-                      adultCount--;
-                    }
-                    if (childCount > adultCount) {
-                      childCount--;
-                    }
-                    if (infantCount > adultCount) {
-                      infantCount--;
-                    }
-                  });
-                },
-                count: adultCount),
-            //
-            0.01.ph,
-            //
-            Counter(
-                title: "Child",
-                onInc: () {
-                  setState(() {
-                    if (childCount < adultCount) {
-                      childCount++;
-                    }
-                  });
-                },
-                onDec: () {
-                  setState(() {
-                    if (childCount > 0) {
-                      childCount--;
-                    }
-                  });
-                },
-                count: childCount),
-
-            0.01.ph,
-            //
-            Counter(
-                title: "Infant",
-                onInc: () {
-                  setState(() {
-                    if (infantCount < adultCount) {
-                      infantCount++;
-                    }
-                  });
-                },
-                onDec: () {
-                  setState(() {
-                    if (infantCount > 0) {
-                      infantCount--;
-                    }
-                  });
-                },
-                count: infantCount),
-            // SizedBox(
-            //   width: w,
-            //   child: DropdownButton(
-            //       isDense: true,
-            //       isExpanded: true,
-            //       icon: Icon(Icons.arrow_drop_down),
-            //       value: selectedTraveller,
-            //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.0),
-            //       items: travellerList.map((String item) {
-            //         return DropdownMenuItem(
-            //             value: item, child: CommonText(text: item));
-            //       }).toList(),
-            //       onChanged: (String? val) {
-            //         setState(() => selectedTraveller = val!);
-            //       }),
-            // ),
-
-            // Cabin Class  ---------------------------------
-            0.04.ph,
-            // CommonText(text: 'CABIN CLASS', fontSize: 12.0),
-            //
-            // SizedBox(
-            //   width: w,
-            //   child: DropdownButton(
-            //       isDense: true,
-            //       isExpanded: true,
-            //       icon: Icon(Icons.arrow_drop_down),
-            //       value: selectedCabin,
-            //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.0),
-            //       items: cabinList.map((String item) {
-            //         return DropdownMenuItem(
-            //             value: item, child: CommonText(text: item));
-            //       }).toList(),
-            //       onChanged: (String? val) {
-            //         setState(() => selectedCabin = val!);
-            //       }),
-            // ),
-
-            // Search Flight Button -----------------------------------
-            // Spacer(),
-            0.04.ph,
-            CustomButton(
-              height: 40,
-              width: w,
-              text: 'Search Hotels',
-              onPress: () {
-                if (widget.toCity == "" ||
-                    departDate == "Select Date" ||
-                    departDate == "" ||
-                    arriveDate == "Select Date" ||
-                    arriveDateForm == "") {
-                  Get.showSnackbar(gradientSnackbar(
-                      "Incomplete Form",
-                      "Please fill the form correctly",
-                      AppColors.orange,
-                      Icons.warning_rounded));
-                } else {
-                  Get.to(() => SearchHotelScreen(
-                        cabinClass: widget.cabinClass.toString(),
-                        traveller: selectedTraveller.toString(),
-                        adultCount: adultCount,
-                        childCount: childCount,
-                        infantCount: infantCount,
-                        toCity: widget.toCity.toString(),
-                        fromCity: 'NBO',
-                        arriveDate: arriveDateForm.toString(),
-                        departDate: departDateForm.toString(),
-                        tripType: tripType.toString(),
-                        //
-                        child1age: selectedChildAge1,
-                        child2age: selectedChildAge2,
-                        child3age: selectedChildAge3,
-                        child4age: selectedChildAge4,
-                        //
-                        infant1age: selectedCIntantAge1,
-                        infant2age: selectedCIntantAge2,
-                        infant3age: selectedCIntantAge3,
-                        infant4age: selectedCIntantAge4,
-                        //
-                      ));
-                }
-              },
-            ),
-          ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: "float",
-        elevation: 16.0,
-        isExtended: true,
-        label: CommonText(
-            text: 'Room', color: AppColors.white, weight: FontWeight.w500),
-        backgroundColor: AppColors.appColorPrimary,
-        tooltip: 'Add Rooms',
-        onPressed: () {
-          // _addMore();
-        },
-        shape:
-            ContinuousRectangleBorder(borderRadius: BorderRadius.circular(40)),
-        icon: Icon(Icons.add, color: AppColors.white, size: 32),
-      ),
+      ],
     );
   }
 
@@ -363,6 +517,22 @@ class _AccommodationTabViewState extends State<AccommodationTabView> {
   //     ],
   //   );
   // }
+
+  //--------------------- Add Room func
+  void _addMore() {
+    if (roomList.length < 4) {
+      setState(() {
+        roomList.add(
+            {"Adults": 1, "ChildrenAndInfant": 0, "ChildrenAndInfantAges": []});
+      });
+    } else {
+      Get.showSnackbar(gradientSnackbar(
+          "Limit reached",
+          "You can only add up to 4 rooms",
+          Colors.grey,
+          Icons.warning_amber_rounded));
+    }
+  }
 }
 
 class ageCounter extends StatelessWidget {
