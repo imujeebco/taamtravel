@@ -22,76 +22,76 @@ import '../../../app/utils/custom_functions/app_alerts.dart';
 
 // ignore: must_be_immutable
 class HotelDetailsScreen extends StatefulWidget {
-  String searchID;
-  String flightID;
-  String cabinClass;
-  String traveller;
-  int? adultCount;
-  int? childCount;
-  int? infantCount;
-  //
-  String departFromDate1;
-  String departFromTime1;
-  String departFromCode1;
-  String departFlight;
-  String arriveToDate1;
-  String arriveToTime1;
-  String arriveToCode1;
-  //
-  String arriveFlight;
-  String departFromDate2;
-  String departFromTime2;
-  String departFromCode2;
-  String arriveToDate2;
-  String arriveToTime2;
-  String arriveToCode2;
-  //
-  int? child1age;
-  int? child2age;
-  int? child3age;
-  int? child4age;
-  //
-  int? infant1age;
-  int? infant2age;
-  int? infant3age;
-  int? infant4age;
+  // String searchID;
+  // String flightID;
+  // String cabinClass;
+  // String traveller;
+  // int? adultCount;
+  // int? childCount;
+  // int? infantCount;
+  // //
+  // String departFromDate1;
+  // String departFromTime1;
+  // String departFromCode1;
+  // String departFlight;
+  // String arriveToDate1;
+  // String arriveToTime1;
+  // String arriveToCode1;
+  // //
+  // String arriveFlight;
+  // String departFromDate2;
+  // String departFromTime2;
+  // String departFromCode2;
+  // String arriveToDate2;
+  // String arriveToTime2;
+  // String arriveToCode2;
+  // //
+  // int? child1age;
+  // int? child2age;
+  // int? child3age;
+  // int? child4age;
+  // //
+  // int? infant1age;
+  // int? infant2age;
+  // int? infant3age;
+  // int? infant4age;
   //
 
   HotelDetailsScreen({
     super.key,
-    required this.searchID,
-    required this.flightID,
-    required this.cabinClass,
-    required this.traveller,
-    required this.adultCount,
-    required this.childCount,
-    required this.infantCount,
-    //
-    required this.departFlight,
-    required this.departFromDate1,
-    required this.departFromTime1,
-    required this.departFromCode1,
-    required this.arriveToDate1,
-    required this.arriveToTime1,
-    required this.arriveToCode1,
-    //
-    required this.arriveFlight,
-    required this.departFromDate2,
-    required this.departFromTime2,
-    required this.departFromCode2,
-    required this.arriveToDate2,
-    required this.arriveToTime2,
-    required this.arriveToCode2,
-    //
-    required this.child1age,
-    required this.child2age,
-    required this.child3age,
-    required this.child4age,
-    //
-    required this.infant1age,
-    required this.infant2age,
-    required this.infant3age,
-    required this.infant4age,
+    // required this.searchID,
+    // required this.flightID,
+    // required this.cabinClass,
+    // required this.traveller,
+    // required this.adultCount,
+    // required this.childCount,
+    // required this.infantCount,
+    // //
+    // required this.departFlight,
+    // required this.departFromDate1,
+    // required this.departFromTime1,
+    // required this.departFromCode1,
+    // required this.arriveToDate1,
+    // required this.arriveToTime1,
+    // required this.arriveToCode1,
+    // //
+    // required this.arriveFlight,
+    // required this.departFromDate2,
+    // required this.departFromTime2,
+    // required this.departFromCode2,
+    // required this.arriveToDate2,
+    // required this.arriveToTime2,
+    // required this.arriveToCode2,
+    // //
+    // required this.child1age,
+    // required this.child2age,
+    // required this.child3age,
+    // required this.child4age,
+    // //
+    // required this.infant1age,
+    // required this.infant2age,
+    // required this.infant3age,
+    // required this.infant4age,
     //
   });
 
@@ -102,15 +102,15 @@ class HotelDetailsScreen extends StatefulWidget {
 class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
   final DataController dataController = Get.put(DataController());
   final FlightFareRuleController flightFareRuleController =
-  Get.put(FlightFareRuleController());
+      Get.put(FlightFareRuleController());
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      dataController.loadMyData();
-      flightFareRuleController.fetchFareRule(widget.searchID, widget.flightID);
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   dataController.loadMyData();
+    //   flightFareRuleController.fetchFareRule(widget.searchID, widget.flightID);
+    // });
   }
 
   @override
@@ -172,43 +172,43 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  HotelPackageWidget(
-                                    name: 'Saver',
-                                    traveller: widget.traveller,
-                                    cabinClass: widget.cabinClass,
-                                    charges: data1[index]!.totalAmount,
-                                    tax: data1[index]!.taxesAmount,
-                                    searchID: widget.searchID,
-                                    flightID: widget.flightID,
-                                    departFlight: widget.departFlight,
-                                    arriveFlight: widget.arriveFlight,
-                                    departFromDate1: widget.departFromDate1,
-                                    departFromTime1: widget.departFromTime1,
-                                    departFromCode1: widget.departFromCode1,
-                                    departFromDate2: widget.departFromDate2,
-                                    departFromTime2: widget.departFromTime2,
-                                    departFromCode2: widget.departFromCode2,
-                                    arriveToDate1: widget.arriveToDate1,
-                                    arriveToTime1: widget.arriveToTime1,
-                                    arriveToCode1: widget.arriveToCode1,
-                                    arriveToDate2: widget.arriveToDate2,
-                                    arriveToCode2: widget.arriveToCode2,
-                                    arriveToTime2: widget.arriveToTime2,
-                                    adultCount: widget.adultCount,
-                                    childCount: widget.childCount,
-                                    infantCount: widget.infantCount,
-                                    //
-                                    child1age: widget.child1age,
-                                    child2age: widget.child2age,
-                                    child3age: widget.child3age,
-                                    child4age: widget.child4age,
-                                    //
-                                    infant1age: widget.infant1age,
-                                    infant2age: widget.infant2age,
-                                    infant3age: widget.infant3age,
-                                    infant4age: widget.infant4age,
-                                    //
-                                  ),
+                                  // HotelPackageWidget(
+                                  //   name: 'Saver',
+                                  //   traveller: widget.traveller,
+                                  //   cabinClass: widget.cabinClass,
+                                  //   charges: data1[index]!.totalAmount,
+                                  //   tax: data1[index]!.taxesAmount,
+                                  //   searchID: widget.searchID,
+                                  //   flightID: widget.flightID,
+                                  //   departFlight: widget.departFlight,
+                                  //   arriveFlight: widget.arriveFlight,
+                                  //   departFromDate1: widget.departFromDate1,
+                                  //   departFromTime1: widget.departFromTime1,
+                                  //   departFromCode1: widget.departFromCode1,
+                                  //   departFromDate2: widget.departFromDate2,
+                                  //   departFromTime2: widget.departFromTime2,
+                                  //   departFromCode2: widget.departFromCode2,
+                                  //   arriveToDate1: widget.arriveToDate1,
+                                  //   arriveToTime1: widget.arriveToTime1,
+                                  //   arriveToCode1: widget.arriveToCode1,
+                                  //   arriveToDate2: widget.arriveToDate2,
+                                  //   arriveToCode2: widget.arriveToCode2,
+                                  //   arriveToTime2: widget.arriveToTime2,
+                                  //   adultCount: widget.adultCount,
+                                  //   childCount: widget.childCount,
+                                  //   infantCount: widget.infantCount,
+                                  //   //
+                                  //   child1age: widget.child1age,
+                                  //   child2age: widget.child2age,
+                                  //   child3age: widget.child3age,
+                                  //   child4age: widget.child4age,
+                                  //   //
+                                  //   infant1age: widget.infant1age,
+                                  //   infant2age: widget.infant2age,
+                                  //   infant3age: widget.infant3age,
+                                  //   infant4age: widget.infant4age,
+                                  //   //
+                                  // ),
                                 ]);
                           }));
                 }
@@ -226,83 +226,83 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
 //////////////////////////////////////////////////////////////////////
 // ignore: must_be_immutable
 class HotelPackageWidget extends StatefulWidget {
-  dynamic? charges;
-  dynamic? tax;
-  String searchID;
-  String flightID;
-  String traveller;
-  int? adultCount;
-  int? childCount;
-  int? infantCount;
-  String cabinClass;
-//
-  String departFromDate1;
-  String departFromTime1;
-  String departFromCode1;
-  String departFlight;
-  String arriveToDate1;
-  String arriveToTime1;
-  String arriveToCode1;
-  //
-  String arriveFlight;
-  String departFromDate2;
-  String departFromTime2;
-  String departFromCode2;
-  String arriveToDate2;
-  String arriveToTime2;
-  String arriveToCode2;
-  //
-  int? child1age;
-  int? child2age;
-  int? child3age;
-  int? child4age;
-  //
-  int? infant1age;
-  int? infant2age;
-  int? infant3age;
-  int? infant4age;
-  //
+//   dynamic? charges;
+//   dynamic? tax;
+//   String searchID;
+//   String flightID;
+//   String traveller;
+//   int? adultCount;
+//   int? childCount;
+//   int? infantCount;
+//   String cabinClass;
+// //
+//   String departFromDate1;
+//   String departFromTime1;
+//   String departFromCode1;
+//   String departFlight;
+//   String arriveToDate1;
+//   String arriveToTime1;
+//   String arriveToCode1;
+//   //
+//   String arriveFlight;
+//   String departFromDate2;
+//   String departFromTime2;
+//   String departFromCode2;
+//   String arriveToDate2;
+//   String arriveToTime2;
+//   String arriveToCode2;
+//   //
+//   int? child1age;
+//   int? child2age;
+//   int? child3age;
+//   int? child4age;
+//   //
+//   int? infant1age;
+//   int? infant2age;
+//   int? infant3age;
+//   int? infant4age;
+//   //
 
   HotelPackageWidget({
-    required this.name,
-    this.charges,
-    this.tax,
-    required this.traveller,
-    required this.adultCount,
-    required this.childCount,
-    required this.infantCount,
-    required this.cabinClass,
-    required this.searchID,
-    required this.flightID,
-    required this.departFlight,
-    required this.departFromDate1,
-    required this.departFromTime1,
-    required this.departFromCode1,
-    required this.arriveToDate1,
-    required this.arriveToTime1,
-    required this.arriveToCode1,
-    required this.arriveFlight,
-    required this.departFromDate2,
-    required this.departFromTime2,
-    required this.departFromCode2,
-    required this.arriveToDate2,
-    required this.arriveToTime2,
-    required this.arriveToCode2,
-    //
-    required this.child1age,
-    required this.child2age,
-    required this.child3age,
-    required this.child4age,
-    //
-    required this.infant1age,
-    required this.infant2age,
-    required this.infant3age,
-    required this.infant4age,
+    // required this.name,
+    // this.charges,
+    // this.tax,
+    // required this.traveller,
+    // required this.adultCount,
+    // required this.childCount,
+    // required this.infantCount,
+    // required this.cabinClass,
+    // required this.searchID,
+    // required this.flightID,
+    // required this.departFlight,
+    // required this.departFromDate1,
+    // required this.departFromTime1,
+    // required this.departFromCode1,
+    // required this.arriveToDate1,
+    // required this.arriveToTime1,
+    // required this.arriveToCode1,
+    // required this.arriveFlight,
+    // required this.departFromDate2,
+    // required this.departFromTime2,
+    // required this.departFromCode2,
+    // required this.arriveToDate2,
+    // required this.arriveToTime2,
+    // required this.arriveToCode2,
+    // //
+    // required this.child1age,
+    // required this.child2age,
+    // required this.child3age,
+    // required this.child4age,
+    // //
+    // required this.infant1age,
+    // required this.infant2age,
+    // required this.infant3age,
+    // required this.infant4age,
     //
     super.key,
   });
 
-  final String name;
+  // final String name;
 
   @override
   State<HotelPackageWidget> createState() => _HotelPackageWidgetState();
@@ -326,10 +326,24 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    dynamic? total = widget.charges + widget.tax!;
+    // dynamic? total = widget.charges + widget.tax!;
     Size size = MediaQuery.of(context).size;
-    List<String> servicesList = ["Luggage room", "Wi-fi", "Airport Shuttle","Restaurant","Bicycle rentals","BBQ Facilities"];
-    List<IconData> servicesIcon = [Icons.luggage_outlined,Icons.wifi,Icons.airport_shuttle_outlined,Icons.restaurant,Icons.pedal_bike_outlined,Icons.outdoor_grill_outlined];
+    List<String> servicesList = [
+      "Luggage room",
+      "Wi-fi",
+      "Airport Shuttle",
+      "Restaurant",
+      "Bicycle rentals",
+      "BBQ Facilities"
+    ];
+    List<IconData> servicesIcon = [
+      Icons.luggage_outlined,
+      Icons.wifi,
+      Icons.airport_shuttle_outlined,
+      Icons.restaurant,
+      Icons.pedal_bike_outlined,
+      Icons.outdoor_grill_outlined
+    ];
 
     return Container(
       padding: EdgeInsets.fromLTRB(10.0, 10, 10, 10),
@@ -359,17 +373,24 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
                 fontSize: 15,
                 weight: FontWeight.w600,
               ),
-              Icon(Icons.star,color: Color.fromRGBO(236, 171, 71, 1),size: 15),
-              Icon(Icons.star,color: Color.fromRGBO(236, 171, 71, 1),size: 15),
-              Icon(Icons.star,color: Color.fromRGBO(236, 171, 71, 1),size: 15),
-              Icon(Icons.star,size: 15,),
-              Icon(Icons.star,size: 15),
+              Icon(Icons.star,
+                  color: Color.fromRGBO(236, 171, 71, 1), size: 15),
+              Icon(Icons.star,
+                  color: Color.fromRGBO(236, 171, 71, 1), size: 15),
+              Icon(Icons.star,
+                  color: Color.fromRGBO(236, 171, 71, 1), size: 15),
+              Icon(
+                Icons.star,
+                size: 15,
+              ),
+              Icon(Icons.star, size: 15),
             ],
           ),
           0.02.ph,
 // -----------------------------------------------------
           CommonText(
-            text: '171 Frere RoadClarke St. Shahrah e Iraq, Saddar, Karachi 74400,',
+            text:
+                '171 Frere RoadClarke St. Shahrah e Iraq, Saddar, Karachi 74400,',
             fontSize: 11,
             weight: FontWeight.normal,
           ),
@@ -391,8 +412,8 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
                     border: Border.all(),
                     borderRadius: BorderRadius.circular(3.0),
                   ),
-                  child: Icon(Icons.share_outlined,color:Colors.black,size: 20)
-              ),
+                  child: Icon(Icons.share_outlined,
+                      color: Colors.black, size: 20)),
               0.02.pw,
               Container(
                   height: 40,
@@ -401,8 +422,8 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
                     border: Border.all(),
                     borderRadius: BorderRadius.circular(3.0),
                   ),
-                  child: Icon(Icons.favorite_border,color:Colors.black,size: 20)
-              ),
+                  child: Icon(Icons.favorite_border,
+                      color: Colors.black, size: 20)),
             ],
           ),
 
@@ -413,21 +434,26 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
             borderRadius: BorderRadius.circular(10),
             child: CarouselSlider(
               items: [
-                Image.network('https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2F0ee5b7ff_z.jpg',
+                Image.network(
+                    'https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2F0ee5b7ff_z.jpg',
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover),
-                Image.network('https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2Fb4a24cb4_z.jpg',
+                Image.network(
+                    'https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2Fb4a24cb4_z.jpg',
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover),
-                Image.network('https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2Ff3d623e5_z.jpg',
+                Image.network(
+                    'https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2Ff3d623e5_z.jpg',
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover),
               ],
               options: CarouselOptions(
                 viewportFraction: 1,
-                height: size.height*0.3, // Customize the height of the carousel
+                height:
+                    size.height * 0.3, // Customize the height of the carousel
                 autoPlay: true, // Enable auto-play
-                enlargeCenterPage: false, // Increase the size of the center item
+                enlargeCenterPage:
+                    false, // Increase the size of the center item
                 enableInfiniteScroll: true, // Enable infinite scroll
                 onPageChanged: (index, reason) {
                   // Optional callback when the page changes
@@ -448,35 +474,35 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
           0.02.ph,
           ReadMoreText(
             'Make yourself at home in one of the 80 air-conditioned '
-                'rooms featuring refrigerators and LED televisions. '
-                'Complimentary wireless internet access keeps you '
-                'connected, and cable programming is available for '
-                'your entertainment. Bathrooms with separate bathtubs '
-                'and showers feature jetted bathtubs and rainfall '
-                'showerheads. Conveniences include phones, as well '
-                'as safes and complimentary newspapers.\n\n'
-                'Take advantage of recreation opportunities such as '
-                'a fitness center, or other amenities including '
-                'complimentary wireless internet access and concierge '
-                'services. Additional amenities at this hotel include'
-                ' babysitting (surcharge), wedding services, and a '
-                'picnic area. Guests can get around on the shuttle '
-                '(surcharge), which operates within 9 miles.\n\n'
-                'Stop by the hotel\'s restaurant, Ruby restaurant, '
-                'for lunch or dinner. Dining is also available at '
-                'the coffee shop/cafe, and 24-hour room service is '
-                'provided. Mingle with other guests at the '
-                'complimentary reception, held daily. Wrap up your '
-                'day with a drink at the bar/lounge. A complimentary '
-                'buffet breakfast is served daily from 7 AM to 11 AM.\n\n'
-                'Featured amenities include a 24-hour business center,'
-                ' complimentary newspapers in the lobby, and dry '
-                'cleaning/laundry services. Planning an event in '
-                'Karachi? This hotel has 1550 square feet '
-                '(144 square meters) of space consisting of a '
-                'conference center and meeting rooms. Guests may use '
-                'a train station pick-up service for a surcharge, '
-                'and free valet parking is available onsite.',
+            'rooms featuring refrigerators and LED televisions. '
+            'Complimentary wireless internet access keeps you '
+            'connected, and cable programming is available for '
+            'your entertainment. Bathrooms with separate bathtubs '
+            'and showers feature jetted bathtubs and rainfall '
+            'showerheads. Conveniences include phones, as well '
+            'as safes and complimentary newspapers.\n\n'
+            'Take advantage of recreation opportunities such as '
+            'a fitness center, or other amenities including '
+            'complimentary wireless internet access and concierge '
+            'services. Additional amenities at this hotel include'
+            ' babysitting (surcharge), wedding services, and a '
+            'picnic area. Guests can get around on the shuttle '
+            '(surcharge), which operates within 9 miles.\n\n'
+            'Stop by the hotel\'s restaurant, Ruby restaurant, '
+            'for lunch or dinner. Dining is also available at '
+            'the coffee shop/cafe, and 24-hour room service is '
+            'provided. Mingle with other guests at the '
+            'complimentary reception, held daily. Wrap up your '
+            'day with a drink at the bar/lounge. A complimentary '
+            'buffet breakfast is served daily from 7 AM to 11 AM.\n\n'
+            'Featured amenities include a 24-hour business center,'
+            ' complimentary newspapers in the lobby, and dry '
+            'cleaning/laundry services. Planning an event in '
+            'Karachi? This hotel has 1550 square feet '
+            '(144 square meters) of space consisting of a '
+            'conference center and meeting rooms. Guests may use '
+            'a train station pick-up service for a surcharge, '
+            'and free valet parking is available onsite.',
             trimMode: TrimMode.Line,
             trimLines: 4,
             colorClickableText: Colors.pink,
@@ -501,7 +527,6 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
                 mainAxisSpacing: 8.0, // spacing between rows
                 crossAxisSpacing: 8.0,
                 childAspectRatio: (1 / .4),
-
               ),
               padding: EdgeInsets.all(8.0), // padding around the grid
               itemCount: servicesList.length, // total number of items
@@ -515,7 +540,8 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Icon(servicesIcon[index],color:Colors.black54,size: 30),
+                          child: Icon(servicesIcon[index],
+                              color: Colors.black54, size: 30),
                         ),
                         CommonText(
                           text: servicesList[index],
@@ -523,8 +549,7 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
                           weight: FontWeight.normal,
                         ),
                       ],
-                    )
-                );
+                    ));
               },
             ),
           ),
@@ -535,7 +560,6 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
 
           ReviewWidget(),
 
-
 // -----------------------------------------------------
 
           0.05.ph,
@@ -545,45 +569,44 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
               // text: 'Avail this Flight for \$${total.toStringAsFixed(2)}',
               text: "Book",
               onPress: () {
-
-                Get.to(() => RoomDetailsScreen(
-                  fare: widget.charges.toStringAsFixed(2),
-                  tax: widget.tax.toStringAsFixed(2),
-                  total: total.toStringAsFixed(2),
-                  traveller: widget.traveller,
-                  cabinClass: widget.cabinClass,
-                  searchID: widget.searchID,
-                  flightID: widget.flightID,
-                  departFlight: widget.departFlight,
-                  arriveFlight: widget.arriveFlight,
-                  departFromDate1: widget.departFromDate1,
-                  departFromTime1: widget.departFromTime1,
-                  departFromCode1: widget.departFromCode1,
-                  departFromDate2: widget.departFromDate2,
-                  departFromTime2: widget.departFromTime2,
-                  departFromCode2: widget.departFromCode2,
-                  arriveToDate1: widget.arriveToDate1,
-                  arriveToTime1: widget.arriveToTime1,
-                  arriveToCode1: widget.arriveToCode1,
-                  arriveToDate2: widget.arriveToDate2,
-                  arriveToCode2: widget.arriveToCode2,
-                  arriveToTime2: widget.arriveToTime2,
-                  paymentID: '',
-                  adultCount: widget.adultCount,
-                  childCount: widget.childCount,
-                  infantCount: widget.infantCount,
-                  //
-                  child1age: widget.child1age,
-                  child2age: widget.child2age,
-                  child3age: widget.child3age,
-                  child4age: widget.child4age,
-                  //
-                  infant1age: widget.infant1age,
-                  infant2age: widget.infant2age,
-                  infant3age: widget.infant3age,
-                  infant4age: widget.infant4age,
-                  //
-                ));
+                // Get.to(() => RoomDetailsScreen(
+                //   fare: widget.charges.toStringAsFixed(2),
+                //   tax: widget.tax.toStringAsFixed(2),
+                //   total: total.toStringAsFixed(2),
+                //   traveller: widget.traveller,
+                //   cabinClass: widget.cabinClass,
+                //   searchID: widget.searchID,
+                //   flightID: widget.flightID,
+                //   departFlight: widget.departFlight,
+                //   arriveFlight: widget.arriveFlight,
+                //   departFromDate1: widget.departFromDate1,
+                //   departFromTime1: widget.departFromTime1,
+                //   departFromCode1: widget.departFromCode1,
+                //   departFromDate2: widget.departFromDate2,
+                //   departFromTime2: widget.departFromTime2,
+                //   departFromCode2: widget.departFromCode2,
+                //   arriveToDate1: widget.arriveToDate1,
+                //   arriveToTime1: widget.arriveToTime1,
+                //   arriveToCode1: widget.arriveToCode1,
+                //   arriveToDate2: widget.arriveToDate2,
+                //   arriveToCode2: widget.arriveToCode2,
+                //   arriveToTime2: widget.arriveToTime2,
+                //   paymentID: '',
+                //   adultCount: widget.adultCount,
+                //   childCount: widget.childCount,
+                //   infantCount: widget.infantCount,
+                //   //
+                //   child1age: widget.child1age,
+                //   child2age: widget.child2age,
+                //   child3age: widget.child3age,
+                //   child4age: widget.child4age,
+                //   //
+                //   infant1age: widget.infant1age,
+                //   infant2age: widget.infant2age,
+                //   infant3age: widget.infant3age,
+                //   infant4age: widget.infant4age,
+                //   //
+                // ));
                 // Get.to(() => PaymentMethodScreen(
                 // dataController.myLoggedIn.value
                 //     ? Get.to(() => RoomDetailsScreen(
@@ -666,7 +689,6 @@ class RoomsWidget extends StatelessWidget {
 
   HotelPackageWidget widget;
 
-
   RoomsWidget({required this.widget});
 
   @override
@@ -687,7 +709,8 @@ class RoomsWidget extends StatelessWidget {
                 title: 'BED AND BREAKFAST',
                 price: 'US\$36',
               ),
-            ], widget: widget,
+            ],
+            widget: widget,
           ),
           0.03.ph,
           RoomOption(
@@ -697,7 +720,8 @@ class RoomsWidget extends StatelessWidget {
                 title: 'ROOM ONLY',
                 price: 'US\$45',
               ),
-            ], widget: widget,
+            ],
+            widget: widget,
           ),
         ],
       ),
@@ -817,7 +841,10 @@ class RoomOption extends StatelessWidget {
   final List<RoomDetail> roomDetails;
   HotelPackageWidget widget;
 
-  RoomOption({required this.roomType, required this.roomDetails, required this.widget});
+  RoomOption(
+      {required this.roomType,
+      required this.roomDetails,
+      required this.widget});
 
   @override
   Widget build(BuildContext context) {
@@ -844,11 +871,14 @@ class RoomOption extends StatelessWidget {
             ),
             SizedBox(height: 8),
             ...roomDetails.map((detail) => Column(
-              children: [
-                Divider(),
-                RoomDetailWidget(detail: detail,widget: widget,),
-              ],
-            )),
+                  children: [
+                    Divider(),
+                    RoomDetailWidget(
+                      detail: detail,
+                      widget: widget,
+                    ),
+                  ],
+                )),
           ],
         ),
       ),
@@ -969,8 +999,6 @@ class RoomDetail extends StatelessWidget {
 //   }
 // }
 
-
-
 class RoomDetailWidget extends StatelessWidget {
   final RoomDetail detail;
   final HotelPackageWidget widget;
@@ -1023,47 +1051,47 @@ class RoomDetailWidget extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                Get.to(() => RoomDetailsScreen(
-                  fare: widget.charges.toStringAsFixed(2),
-                  tax: widget.tax.toStringAsFixed(2),
-                  total: "45",
-                  traveller: widget.traveller,
-                  cabinClass: widget.cabinClass,
-                  searchID: widget.searchID,
-                  flightID: widget.flightID,
-                  departFlight: widget.departFlight,
-                  arriveFlight: widget.arriveFlight,
-                  departFromDate1: widget.departFromDate1,
-                  departFromTime1: widget.departFromTime1,
-                  departFromCode1: widget.departFromCode1,
-                  departFromDate2: widget.departFromDate2,
-                  departFromTime2: widget.departFromTime2,
-                  departFromCode2: widget.departFromCode2,
-                  arriveToDate1: widget.arriveToDate1,
-                  arriveToTime1: widget.arriveToTime1,
-                  arriveToCode1: widget.arriveToCode1,
-                  arriveToDate2: widget.arriveToDate2,
-                  arriveToCode2: widget.arriveToCode2,
-                  arriveToTime2: widget.arriveToTime2,
-                  paymentID: '',
-                  adultCount: widget.adultCount,
-                  childCount: widget.childCount,
-                  infantCount: widget.infantCount,
-                  //
-                  child1age: widget.child1age,
-                  child2age: widget.child2age,
-                  child3age: widget.child3age,
-                  child4age: widget.child4age,
-                  //
-                  infant1age: widget.infant1age,
-                  infant2age: widget.infant2age,
-                  infant3age: widget.infant3age,
-                  infant4age: widget.infant4age,
-                  //
-                ));
+                // Get.to(() => RoomDetailsScreen(
+                //   fare: widget.charges.toStringAsFixed(2),
+                //   tax: widget.tax.toStringAsFixed(2),
+                //   total: "45",
+                //   traveller: widget.traveller,
+                //   cabinClass: widget.cabinClass,
+                //   searchID: widget.searchID,
+                //   flightID: widget.flightID,
+                //   departFlight: widget.departFlight,
+                //   arriveFlight: widget.arriveFlight,
+                //   departFromDate1: widget.departFromDate1,
+                //   departFromTime1: widget.departFromTime1,
+                //   departFromCode1: widget.departFromCode1,
+                //   departFromDate2: widget.departFromDate2,
+                //   departFromTime2: widget.departFromTime2,
+                //   departFromCode2: widget.departFromCode2,
+                //   arriveToDate1: widget.arriveToDate1,
+                //   arriveToTime1: widget.arriveToTime1,
+                //   arriveToCode1: widget.arriveToCode1,
+                //   arriveToDate2: widget.arriveToDate2,
+                //   arriveToCode2: widget.arriveToCode2,
+                //   arriveToTime2: widget.arriveToTime2,
+                //   paymentID: '',
+                //   adultCount: widget.adultCount,
+                //   childCount: widget.childCount,
+                //   infantCount: widget.infantCount,
+                //   //
+                //   child1age: widget.child1age,
+                //   child2age: widget.child2age,
+                //   child3age: widget.child3age,
+                //   child4age: widget.child4age,
+                //   //
+                //   infant1age: widget.infant1age,
+                //   infant2age: widget.infant2age,
+                //   infant3age: widget.infant3age,
+                //   infant4age: widget.infant4age,
+                //   //
+                // ));
               },
               style: ElevatedButton.styleFrom(primary: Colors.green),
-              child: Text('Select',style: TextStyle(color: Colors.white) ),
+              child: Text('Select', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -1071,4 +1099,3 @@ class RoomDetailWidget extends StatelessWidget {
     );
   }
 }
-

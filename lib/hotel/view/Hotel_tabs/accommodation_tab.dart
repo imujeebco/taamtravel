@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, camel_case_types
+// ignore_for_file: must_be_immutable, camel_case_types, unrelated_type_equality_checks
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +14,10 @@ import '../../../airline/home_bottom_nav/controller/search_controller.dart';
 import '../../../app/configs/app_colors.dart';
 import '../../../app/utils/custom_widgets/custom_outline_button_Wicon.dart';
 import '../../../app/utils/custom_widgets/custom_textfield.dart';
+import '../search_hotels.dart';
 
 class AccommodationTabView extends StatefulWidget {
-  String? toCity;
-  String? fromCity;
-  String? cabinClass;
-  AccommodationTabView(
-      {super.key, this.toCity, this.fromCity, this.cabinClass});
+  AccommodationTabView({super.key});
 
   @override
   State<AccommodationTabView> createState() => _AccommodationTabViewState();
@@ -29,7 +26,6 @@ class AccommodationTabView extends StatefulWidget {
 class _AccommodationTabViewState extends State<AccommodationTabView> {
   String? _cabinClass;
   String? selectedCabin;
-  var selectedTraveller = 'Adult';
   // int selectedChildAge1 = 2;
   // int selectedChildAge2 = 2;
   // int selectedChildAge3 = 2;
@@ -77,9 +73,7 @@ class _AccommodationTabViewState extends State<AccommodationTabView> {
   }
 
   setArgs() {
-    _cabinClass = widget.cabinClass;
     selectedCabin = _cabinClass.toString();
-    print("Return Tab Cabin: ${widget.cabinClass}");
   }
 
   var travellerList = ['Adult', 'Child', 'Infant'];
@@ -88,7 +82,6 @@ class _AccommodationTabViewState extends State<AccommodationTabView> {
   String? departDate = "Select Date";
   String? departDateForm = "Select Date";
   String? arriveDateForm = "Select Date";
-  String? tripType = "RoundTrip";
   DateTime depart = DateTime.now();
 
   Future<void> _selectDepartDate(BuildContext context) async {
@@ -441,14 +434,14 @@ class _AccommodationTabViewState extends State<AccommodationTabView> {
                   width: w,
                   text: 'Search Hotels',
                   onPress: () {
-                    resMap["Checkin"] = departDate;
-                    resMap["Checkout"] = arriveDate;
-                    resMap["City"] = toCode;
-                    resMap["Passengers"] = roomList;
+                    resMap["checkIn"] = departDateForm;
+                    resMap["checkOut"] = arriveDateForm;
+                    resMap["Rooms"] = roomList;
+                    resMap["destination"] = toCode;
 
                     print("Response Map: $resMap");
 
-                    if (widget.toCity == "" ||
+                    if (toCity == "" ||
                         departDate == "Select Date" ||
                         departDate == "" ||
                         arriveDate == "Select Date" ||
@@ -459,29 +452,9 @@ class _AccommodationTabViewState extends State<AccommodationTabView> {
                           AppColors.orange,
                           Icons.warning_rounded));
                     } else {
-                      // Get.to(() => SearchHotelScreen(
-                      //       cabinClass: widget.cabinClass.toString(),
-                      //       traveller: selectedTraveller.toString(),
-                      //       adultCount: adultCount,
-                      //       childCount: childCount,
-                      //       infantCount: infantCount,
-                      //       toCity: widget.toCity.toString(),
-                      //       fromCity: 'NBO',
-                      //       arriveDate: arriveDateForm.toString(),
-                      //       departDate: departDateForm.toString(),
-                      //       tripType: tripType.toString(),
-                      //       //
-                      //       child1age: selectedChildAge1,
-                      //       child2age: selectedChildAge2,
-                      //       child3age: selectedChildAge3,
-                      //       child4age: selectedChildAge4,
-                      //       //
-                      //       infant1age: selectedCIntantAge1,
-                      //       infant2age: selectedCIntantAge2,
-                      //       infant3age: selectedCIntantAge3,
-                      //       infant4age: selectedCIntantAge4,
-                      //       //
-                      //     ));
+                      Get.to(() => SearchHotelScreen(
+                            dataMap: resMap,
+                          ));
                     }
                   },
                 ),

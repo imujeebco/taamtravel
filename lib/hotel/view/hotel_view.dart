@@ -96,14 +96,8 @@ class _HotelScreenState extends State<HotelScreen> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    AccommodationTabView(
-                        cabinClass: widget.cabinClass ?? "Economy",
-                        fromCity: fromCode,
-                        toCity: toCode),
-                    AccommodationTabView(
-                        cabinClass: widget.cabinClass ?? "Economy",
-                        fromCity: fromCode,
-                        toCity: toCode),
+                    AccommodationTabView(),
+                    AccommodationTabView(),
                   ],
                 ),
               ),
