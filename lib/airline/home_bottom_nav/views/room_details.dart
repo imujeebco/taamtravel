@@ -1,5 +1,7 @@
 // ignore_for_file: must_be_immutable, non_constant_identifier_names
 
+import 'dart:convert';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -19,88 +21,103 @@ import 'package:travel_app/airline/home_bottom_nav/views/payment_method.dart';
 import '../../../app/configs/app_border_radius.dart';
 import '../../../app/configs/app_colors.dart';
 import '../../../app/data/data_controller.dart';
+import '../../../hotel/model/booking_request.dart';
+import '../../../hotel/view/Hotel_tabs/search_hotel_model.dart';
+import '../../../hotel/view/Hotel_tabs/search_room_model.dart';
 
 class RoomDetailsScreen extends StatefulWidget {
-  String searchID;
-  String flightID;
-  String paymentID;
-  //
-  String departFromDate1;
-  String departFromTime1;
-  String departFromCode1;
-  String departFlight;
-  String arriveToDate1;
-  String arriveToTime1;
-  String arriveToCode1;
-  //
-  String arriveFlight;
-  String departFromDate2;
-  String departFromTime2;
-  String departFromCode2;
-  String arriveToDate2;
-  String arriveToTime2;
-  String arriveToCode2;
-  //
-  String traveller;
-  int? adultCount;
-  int? childCount;
-  int? infantCount;
-  String cabinClass;
-  String fare;
-  String tax;
-  String total;
-  //
-  int? child1age;
-  int? child2age;
-  int? child3age;
-  int? child4age;
-  //
-  int? infant1age;
-  int? infant2age;
-  int? infant3age;
-  int? infant4age;
+  Map dataMap;
+  Hotels hotel;
+  String searchId;
+  Rooms room;
+
+  int totalAdults = 0;
+  int totalChildrenAndInfant = 0;
+
+  // String searchID;
+  // String flightID;
+  // String paymentID;
+  // //
+  // String departFromDate1;
+  // String departFromTime1;
+  // String departFromCode1;
+  // String departFlight;
+  // String arriveToDate1;
+  // String arriveToTime1;
+  // String arriveToCode1;
+  // //
+  // String arriveFlight;
+  // String departFromDate2;
+  // String departFromTime2;
+  // String departFromCode2;
+  // String arriveToDate2;
+  // String arriveToTime2;
+  // String arriveToCode2;
+  // //
+  // String traveller;
+  // int? adultCount;
+  // int? childCount;
+  // int? infantCount;
+  // String cabinClass;
+  // String fare;
+  // String tax;
+  // String total;
+  // //
+  // int? child1age;
+  // int? child2age;
+  // int? child3age;
+  // int? child4age;
+  // //
+  // int? infant1age;
+  // int? infant2age;
+  // int? infant3age;
+  // int? infant4age;
   //
 
   RoomDetailsScreen({
     super.key,
-    required this.searchID,
-    required this.flightID,
-    required this.paymentID,
-    //
-    required this.departFlight,
-    required this.departFromDate1,
-    required this.departFromTime1,
-    required this.departFromCode1,
-    required this.arriveToDate1,
-    required this.arriveToTime1,
-    required this.arriveToCode1,
-    //
-    required this.arriveFlight,
-    required this.departFromDate2,
-    required this.departFromTime2,
-    required this.departFromCode2,
-    required this.arriveToDate2,
-    required this.arriveToTime2,
-    required this.arriveToCode2,
-    //
-    required this.traveller,
-    required this.adultCount,
-    required this.childCount,
-    required this.infantCount,
-    required this.cabinClass,
-    required this.fare,
-    required this.tax,
-    required this.total,
-    //
-    required this.child1age,
-    required this.child2age,
-    required this.child3age,
-    required this.child4age,
-    //
-    required this.infant1age,
-    required this.infant2age,
-    required this.infant3age,
-    required this.infant4age,
+    required this.dataMap,
+    required this.hotel,
+    required this.searchId,
+    required this.room
+    // required this.searchID,
+    // required this.flightID,
+    // required this.paymentID,
+    // //
+    // required this.departFlight,
+    // required this.departFromDate1,
+    // required this.departFromTime1,
+    // required this.departFromCode1,
+    // required this.arriveToDate1,
+    // required this.arriveToTime1,
+    // required this.arriveToCode1,
+    // //
+    // required this.arriveFlight,
+    // required this.departFromDate2,
+    // required this.departFromTime2,
+    // required this.departFromCode2,
+    // required this.arriveToDate2,
+    // required this.arriveToTime2,
+    // required this.arriveToCode2,
+    // //
+    // required this.traveller,
+    // required this.adultCount,
+    // required this.childCount,
+    // required this.infantCount,
+    // required this.cabinClass,
+    // required this.fare,
+    // required this.tax,
+    // required this.total,
+    // //
+    // required this.child1age,
+    // required this.child2age,
+    // required this.child3age,
+    // required this.child4age,
+    // //
+    // required this.infant1age,
+    // required this.infant2age,
+    // required this.infant3age,
+    // required this.infant4age,
     //
   });
 
@@ -207,6 +224,8 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
     'Ms': 'MISTER',
     // 'Sir': 'MISTER',
   };
+
+  BookingRequest bookingRequest = BookingRequest();
 
   Future<void> _selectDate(
       BuildContext context,
@@ -471,8 +490,26 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
         "${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}";
   }
 
-  void init() {
+  @override
+  void initState() {
     super.initState();
+    String jsonString = jsonEncode(widget.dataMap);
+
+    bookingRequest = BookingRequest.fromJson(json.decode(jsonString));
+    // Calculate total adults and total children and infants
+
+    // Check if rooms is not null before iterating
+    if (bookingRequest.rooms != null) {
+      for (Room room in bookingRequest.rooms!) {
+        widget.totalAdults += room.adults;
+        widget.totalChildrenAndInfant += room.childrenAndInfant;
+      }
+    }
+
+
+    // print('Total Adults: ${}widget.totalAdults');
+    // print('Total Children and Infants: $totalChildrenAndInfant');
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       dataController.loadMyData();
     });
@@ -483,7 +520,7 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
     HeightWidth(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Passenger Details',
+        title: 'Your Trip Details',
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -491,48 +528,48 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network('https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2F0ee5b7ff_z.jpg',
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.cover),
-              SizedBox(height: 8),
-              Text(
-                'Accommodation in Nairobi',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                'US\$41',
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                '(US\$82 Total price)',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(primary: Colors.green),
-                child: Text('Confirm',style: TextStyle(color: Colors.white),),
-              ),
-              SizedBox(height: 16),
+              // Image.network('https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2F0ee5b7ff_z.jpg',
+              //     width: MediaQuery.of(context).size.width,
+              //     fit: BoxFit.cover),
+              // SizedBox(height: 8),
+              // Text(
+              //   'Accommodation in Nairobi',
+              //   style: TextStyle(
+              //     fontSize: 24,
+              //     fontWeight: FontWeight.bold,
+              //   ),
+              // ),
+              // Text(
+              //   'US\$41',
+              //   style: TextStyle(
+              //     fontSize: 24,
+              //     color: Colors.green,
+              //     fontWeight: FontWeight.bold,
+              //   ),
+              // ),
+              // Text(
+              //   '(US\$82 Total price)',
+              //   style: TextStyle(fontSize: 16, color: Colors.grey),
+              // ),
+              // SizedBox(height: 8),
+              // ElevatedButton(
+              //   onPressed: () {},
+              //   style: ElevatedButton.styleFrom(primary: Colors.green),
+              //   child: Text('Confirm',style: TextStyle(color: Colors.white),),
+              // ),
+              // SizedBox(height: 16),
               Row(
                 children: [
                   Icon(Icons.people),
                   SizedBox(width: 8),
-                  Text('2 Adults'),
+                  Text('${widget.totalAdults} Adults ${widget.totalChildrenAndInfant > 0 ? '+ ${widget.totalChildrenAndInfant}'  : '' }'),
                 ],
               ),
               Row(
                 children: [
                   Icon(Icons.calendar_today),
                   SizedBox(width: 8),
-                  Text('26 May 2024 - 31 May 2024'),
+                  Text('${bookingRequest.checkIn} - ${bookingRequest.checkOut}'),
                 ],
               ),
               SizedBox(height: 8),
@@ -541,30 +578,30 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                 child: Text('Change your trip'),
               ),
               SizedBox(height: 16),
-              Container(
-                color: Colors.green[100],
-                padding: EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: [
-                        Icon(Icons.add),
-                        SizedBox(height: 8),
-                        Text('Add Activity'),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Icon(Icons.directions_car),
-                        SizedBox(height: 8),
-                        Text('Add Transfer'),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16),
+              // Container(
+              //   color: Colors.green[100],
+              //   padding: EdgeInsets.all(16),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //     children: [
+              //       Column(
+              //         children: [
+              //           Icon(Icons.add),
+              //           SizedBox(height: 8),
+              //           Text('Add Activity'),
+              //         ],
+              //       ),
+              //       Column(
+              //         children: [
+              //           Icon(Icons.directions_car),
+              //           SizedBox(height: 8),
+              //           Text('Add Transfer'),
+              //         ],
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(height: 16),
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -575,7 +612,7 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Red Buffalo House Hotel',
+                      widget.hotel.hotelName ?? '',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -583,9 +620,31 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                     ),
                     Row(
                       children: [
-                        Icon(Icons.star, color: Colors.orange),
-                        Icon(Icons.star, color: Colors.orange),
-                        Icon(Icons.star, color: Colors.orange),
+                        if (widget.hotel.category == 'S1') ...[
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                        ],
+                        if (widget.hotel.category == 'S2') ...[
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                        ],
+                        if (widget.hotel.category == 'S3') ...[
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                        ],
+                        if (widget.hotel.category == 'S4') ...[
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                        ],
+                        if (widget.hotel.category == 'S5') ...[
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                        ],
                       ],
                     ),
                     SizedBox(height: 8),
@@ -593,25 +652,19 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                       children: [
                         Icon(Icons.bed),
                         SizedBox(width: 8),
-                        Text('1 Standard double room'),
+                        Text(widget.room.roomDescription ?? ''),
                       ],
                     ),
                     Row(
                       children: [
                         Icon(Icons.restaurant),
                         SizedBox(width: 8),
-                        Text('ROOM ONLY'),
+                        Text(widget.room.mealPlan ?? ''),
                       ],
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'With a stay at Red Buffalo House Hotel in Nairobi, '
-                          'you\'ll be 1.1 mi (1.8 km) from Nairobi National Park '
-                          'and 8 mi (12.8 km) from Karen Blixen Museum. '
-                          'This guesthouse is 9.7 mi (15.5 km) from United Nations '
-                          'Office at Nairobi and 12 mi (19.4 km) from Thika Road Mall.'
-                          'Take in the views from a garden and make use of amenities '
-                          'such as complimentary wireless internet access...',
+                      widget.hotel.description ?? '',
                       style: TextStyle(color: Colors.grey),
                     ),
                     SizedBox(height: 8),
@@ -623,7 +676,7 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                 ),
               ),
               SizedBox(height: 16),
-              ConfirmTripCard(),
+              ConfirmTripCard(amount:(widget.room.currency ?? '') + ' ' + (widget.room.totalAmount?.toString() ?? '')),
             ],
           ),
         ),
@@ -1063,6 +1116,11 @@ class _FlightSummaryState extends State<FlightSummary> {
 // }
 
 class ConfirmTripCard extends StatelessWidget {
+  String? amount;
+  ConfirmTripCard({
+    required this.amount,
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1115,20 +1173,20 @@ class ConfirmTripCard extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'US\$34',
+                    amount ?? '',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.green,
                     ),
                   ),
-                  Text(
-                    'US\$17 Per person',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
+                  // Text(
+                  //   'US\$17 Per person',
+                  //   style: TextStyle(
+                  //     fontSize: 16,
+                  //     color: Colors.grey,
+                  //   ),
+                  // ),
                 ],
               ),
             ),

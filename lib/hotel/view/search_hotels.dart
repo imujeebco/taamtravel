@@ -9,6 +9,7 @@ import 'package:travel_app/app/utils/custom_widgets/common_text.dart';
 import 'package:travel_app/app/utils/custom_widgets/custom_appbar.dart';
 import 'package:travel_app/app/utils/custom_widgets/custom_button.dart';
 
+import 'hotel_details.dart';
 import '../../app/utils/custom_widgets/custom_outline_button.dart';
 
 import '../controller/search_hotel_controller.dart';
@@ -31,14 +32,6 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
   int? _selectedOutbound;
   int? _selectedInbound;
   String? selection;
-  List<Image> carouselItems = [
-    Image.network(
-        'https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2F0ee5b7ff_z.jpg'),
-    Image.network(
-        'https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2F0ee5b7ff_z.jpg'),
-    Image.network(
-        'https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2F0ee5b7ff_z.jpg'),
-  ];
 
   @override
   void initState() {
@@ -403,106 +396,8 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                                       child: InkWell(
                                         onTap: () {
                                           print("tapped");
-                                          // Get.to(() => HotelDetailsScreen(
-                                          //       cabinClass: widget
-                                          //           .cabinClass
-                                          //           .toString(),
-                                          //       traveller: widget
-                                          //           .traveller
-                                          //           .toString(),
-                                          //       searchID: searchData.id
-                                          //           .toString(),
-                                          //       flightID: searchData
-                                          //           .flights![0].id!
-                                          //           .toString(),
-                                          //       departFromDate1: data1[0]
-                                          //           .outBound!
-                                          //           .departureDate
-                                          //           .toString(),
-                                          //       departFromTime1: data1[0]
-                                          //           .outBound!
-                                          //           .departureTime
-                                          //           .toString(),
-                                          //       departFromCode1: data1[0]
-                                          //           .outBound!
-                                          //           .segments![0]
-                                          //           .departure
-                                          //           .toString(),
-                                          //       arriveToDate1: data1[0]
-                                          //           .outBound!
-                                          //           .arrivalDate
-                                          //           .toString(),
-                                          //       arriveToTime1: data1[0]
-                                          //           .outBound!
-                                          //           .arrivalTime
-                                          //           .toString(),
-                                          //       arriveToCode1: data1[0]
-                                          //           .outBound!
-                                          //           .segments![0]
-                                          //           .arrival
-                                          //           .toString(),
-                                          //       arriveFlight: data1[0]
-                                          //           .inBound!
-                                          //           .segments![0]
-                                          //           .flightNumber
-                                          //           .toString(),
-                                          //       departFlight: data1[0]
-                                          //           .outBound!
-                                          //           .segments![0]
-                                          //           .flightNumber
-                                          //           .toString(),
-                                          //       departFromDate2: data1[0]
-                                          //           .inBound!
-                                          //           .departureDate
-                                          //           .toString(),
-                                          //       departFromTime2: data1[0]
-                                          //           .inBound!
-                                          //           .departureTime
-                                          //           .toString(),
-                                          //       departFromCode2: data1[0]
-                                          //           .inBound!
-                                          //           .segments![0]
-                                          //           .departure
-                                          //           .toString(),
-                                          //       arriveToDate2: data1[0]
-                                          //           .inBound!
-                                          //           .arrivalDate
-                                          //           .toString(),
-                                          //       arriveToTime2: data1[0]
-                                          //           .inBound!
-                                          //           .arrivalTime
-                                          //           .toString(),
-                                          //       arriveToCode2: data1[0]
-                                          //           .inBound!
-                                          //           .segments![0]
-                                          //           .arrival
-                                          //           .toString(),
-                                          //       adultCount:
-                                          //           widget.adultCount,
-                                          //       childCount:
-                                          //           widget.childCount,
-                                          //       infantCount:
-                                          //           widget.infantCount,
-                                          //       //
-                                          //       child1age:
-                                          //           widget.child1age,
-                                          //       child2age:
-                                          //           widget.child2age,
-                                          //       child3age:
-                                          //           widget.child3age,
-                                          //       child4age:
-                                          //           widget.child4age,
-                                          //       //
-                                          //       infant1age:
-                                          //           widget.infant1age,
-                                          //       infant2age:
-                                          //           widget.infant2age,
-                                          //       infant3age:
-                                          //           widget.infant3age,
-                                          //       infant4age:
-                                          //           widget.infant4age,
-                                          //       //
-                                          //     ));
+                                          Get.to(() => HotelDetailsScreen(dataMap: widget.dataMap , hotel: data1![index],searchId: searchData.id.toString(),
+                                              ));
                                         },
                                         child: Column(
                                           children: [
@@ -510,29 +405,15 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                                               alignment: Alignment.topRight,
                                               children: [
                                                 CarouselSlider(
-                                                  items: [
-                                                    Image.network(
-                                                        'https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2F0ee5b7ff_z.jpg',
+                                                  items: data1?[index].imageUrls?.map((item) {
+                                                    return Image.network(
+                                                        item,
                                                         width: MediaQuery.of(
-                                                                context)
+                                                            context)
                                                             .size
                                                             .width,
-                                                        fit: BoxFit.cover),
-                                                    Image.network(
-                                                        'https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2Fb4a24cb4_z.jpg',
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        fit: BoxFit.cover),
-                                                    Image.network(
-                                                        'https://cdn5.travelconline.com/unsafe/fit-in/2000x0/filters:quality(75):format(webp)/https%3A%2F%2Fi.travelapi.com%2Flodging%2F91000000%2F90120000%2F90113500%2F90113432%2Ff3d623e5_z.jpg',
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        fit: BoxFit.cover),
-                                                  ],
+                                                        fit: BoxFit.cover);
+                                                  }).toList(),
                                                   options: CarouselOptions(
                                                     viewportFraction: 1,
                                                     height: size.height *
@@ -566,8 +447,8 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                                             ),
                                             ListTile(
                                               //leading: Icon(Icons.arrow_drop_down_circle),
-                                              title: const Text(
-                                                  'GOHO Rooms Badar',
+                                              title: Text(
+                                                  data1?[index].hotelName ?? '',
                                                   style: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 15,
@@ -577,19 +458,33 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      Icon(Icons.star,
-                                                          color: Color.fromRGBO(
-                                                              236, 171, 71, 1)),
-                                                      Icon(Icons.star,
-                                                          color: Color.fromRGBO(
-                                                              236, 171, 71, 1)),
-                                                      Icon(Icons.star,
-                                                          color: Color.fromRGBO(
-                                                              236, 171, 71, 1)),
-                                                      Icon(Icons.star),
-                                                      Icon(Icons.star),
+                                                      if (data1?[index].category == 'S1') ...[
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                      ],
+                                                      if (data1?[index].category == 'S2') ...[
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                      ],
+                                                      if (data1?[index].category == 'S3') ...[
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                      ],
+                                                      if (data1?[index].category == 'S4') ...[
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                      ],
+                                                      if (data1?[index].category == 'S5') ...[
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                        Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                                                      ],
                                                     ],
-                                                  ),
+                                                  )
                                                 ],
                                               ),
                                             ),
@@ -619,8 +514,9 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                                                   child: Row(
                                                     children: [
                                                       Icon(Icons.bed_sharp),
+                                                      SizedBox(width: 5),
                                                       Text(
-                                                        ' 1 Standard double room',
+                                                        data1?[index].room ?? '',
                                                         style: TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 12),
@@ -628,25 +524,27 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                                                     ],
                                                   ),
                                                 ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                    top: 8.0,
-                                                    left: 8.0,
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(Icons
-                                                          .flatware_outlined),
-                                                      Text(
-                                                        ' BED AND BREAKFAST',
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 12),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
+                                                // Padding(
+                                                //   padding:
+                                                //       const EdgeInsets.only(
+                                                //     top: 8.0,
+                                                //     left: 8.0,
+                                                //   ),
+                                                //   child: Row(
+                                                //     children: [
+                                                //       Icon(Icons
+                                                //           .flatware_outlined),
+                                                //       SizedBox(width: 5),
+                                                //       Text(
+                                                //         'BED AND BREAKFAST',
+                                                //         style: TextStyle(
+                                                //             color: Colors.black,
+                                                //             fontSize: 12),
+                                                //       ),
+                                                //     ],
+                                                //   ),
+                                                // ),
+                                                if (data1?[index].nonRefundable == 'PARTIALLY_REFUNDABLE')
                                                 Padding(
                                                   padding:
                                                       const EdgeInsets.only(
