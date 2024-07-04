@@ -3,6 +3,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:travel_app/app/configs/app_colors.dart';
 import 'package:travel_app/app/configs/app_size_config.dart';
 import 'package:travel_app/app/utils/custom_widgets/common_text.dart';
@@ -13,6 +14,7 @@ import 'hotel_details.dart';
 import '../../app/utils/custom_widgets/custom_outline_button.dart';
 
 import '../controller/search_hotel_controller.dart';
+import 'mapview_screen.dart';
 
 // ignore: must_be_immutable
 class SearchHotelScreen extends StatefulWidget {
@@ -771,6 +773,8 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                           ],
                         ),
                       ),
+                      SizedBox(height: 10),
+                      smallMapWidget(context),
                     ],
                   ),
                 );
@@ -922,6 +926,38 @@ class buildFilterButton extends StatelessWidget {
     );
   }
 }
+
+Widget smallMapWidget(BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      // Handle onTap action here
+      print('Map widget tapped!');
+      Get.to(() => AccommodationsPage());
+    },
+    child: Container(
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.green),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: ElevatedButton(
+          onPressed: () {
+            // Handle button press here
+            print('Map View button pressed!');
+            Get.to(() => AccommodationsPage());
+            // Navigate to map view or perform desired action
+          },
+          child: Text('Map View'),
+        ),
+      ),
+    ),
+  );
+}
+
+
+
 
 class Flight {
   final String airlineName;

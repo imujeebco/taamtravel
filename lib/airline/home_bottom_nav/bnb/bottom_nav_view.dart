@@ -13,6 +13,7 @@ import 'package:travel_app/airline/booking_history/view/my_bookings_screen.dart'
 import 'package:travel_app/airline/profile/view/user_profile_screen.dart';
 
 import '../../../app/data/data_controller.dart';
+import '../../../hotel/booking_history/view/my_hotel_bookings_screen.dart';
 import '../../auth/view/login_screen.dart';
 import '../../../hotel/view/hotel_view.dart';
 
@@ -42,6 +43,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       HotelScreen(cabinClass: widget.cabinClass),
       SearchScreen(cabinClass: widget.cabinClass),
       const BookingScreen(),
+      const HotelBookingScreen(),
       // const CheckInScreen(),
       const UserProfileScreen(),
     ];
@@ -59,6 +61,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     'Hotel Search',
     'Flight Search',
     'My Bookings',
+    'My Hotel Bookings',
     // 'Check-Ins',
     'User Profile',
   ];
@@ -66,6 +69,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     const Icon(Icons.home),
     const Icon(Icons.airplanemode_active_rounded),
     const Icon(Icons.airplane_ticket_rounded),
+    const Icon(Icons.hotel_rounded),
     // const Icon(Icons.location_on),
     const Icon(Icons.person_rounded),
   ];
@@ -74,6 +78,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     {'Icon': Icons.home, 'Name': 'Home'},
     {'Icon': Icons.local_airport_rounded, 'Name': 'Book a flight'},
     {'Icon': Icons.today_rounded, 'Name': 'My Bookings'},
+    {'Icon': Icons.today_rounded, 'Name': 'My Hotel Bookings'},
     // {'Icon': Icons.location_on_rounded, 'Name': 'Check-Ins'},
     {'Icon': Icons.account_circle_rounded, 'Name': 'User Profile'},
     // {'Icon': Icons.settings, 'Name': 'Settings'},

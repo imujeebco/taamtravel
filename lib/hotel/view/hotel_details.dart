@@ -208,39 +208,44 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
 
           // -----------------------------
           0.02.ph,
-          Row(
+          Column(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,  // Align children from start
             children: [
               CommonText(
                 text: hotel.hotelName ?? '',
                 fontSize: 15,
                 weight: FontWeight.w600,
               ),
-              if (hotel.category == 'S1') ...[
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-              ],
-              if (hotel.category == 'S2') ...[
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-              ],
-              if (hotel.category == 'S3') ...[
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-              ],
-              if (hotel.category == 'S4') ...[
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-              ],
-              if (hotel.category == 'S5') ...[
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-              ],
+              Row(
+                children: [
+                  if (hotel.category == 'S1') ...[
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                  ],
+                  if (hotel.category == 'S2') ...[
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                  ],
+                  if (hotel.category == 'S3') ...[
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                  ],
+                  if (hotel.category == 'S4') ...[
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                  ],
+                  if (hotel.category == 'S5') ...[
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                    Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                  ],
+                ],
+              )
             ],
           ),
           0.02.ph,

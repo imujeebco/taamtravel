@@ -3,6 +3,11 @@
         android:label="Taam Travel"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
+
+        <!-- TODO: Add your Google Maps API key here -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDthz0NKdaynPtzwSKYuHcLWkdIFHGC7kg"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -61,6 +61,7 @@ dependencies:
   readmore: ^2.1.0
   rating_summary: ^1.0.2+1
   carousel_slider: ^4.2.1
+  google_maps_flutter: ^2.1.1
 
 
 dev_dependencies:
