@@ -496,7 +496,8 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                                                 padding: const EdgeInsets.only(
                                                     left: 10.0),
                                                 child: Text(
-                                                  'Karachi - Show on map > 7.62 km from Center',
+                                                    data1?[index].address ?? '',
+                                                  //'Karachi - Show on map > 7.62 km from Center',
                                                   style: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 12,

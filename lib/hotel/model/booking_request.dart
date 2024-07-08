@@ -1,8 +1,8 @@
 class BookingRequest {
-  final String? checkIn;
-  final String? checkOut;
-  final List<Room>? rooms;
-  final String? destination;
+  String? checkIn;
+  String? checkOut;
+  List<Room>? rooms;
+  String? destination;
 
   BookingRequest({
     this.checkIn,

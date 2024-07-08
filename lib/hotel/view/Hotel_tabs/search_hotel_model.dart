@@ -51,6 +51,7 @@ class Hotels {
   String? phoneNumber;
   String? rating;
   String? review;
+  bool? selected = false;
 
   Hotels(
       {this.id,
@@ -72,7 +73,9 @@ class Hotels {
       this.address,
       this.phoneNumber,
       this.rating,
-      this.review});
+      this.review,
+      this.selected
+      });
 
   Hotels.fromJson(Map<String, dynamic> json) {
     id = json['id'];

@@ -8,6 +8,12 @@
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDthz0NKdaynPtzwSKYuHcLWkdIFHGC7kg"/>
 
+        <meta-data
+            android:name="com.google.android.libraries.maps.MAP_ID"
+            android:value="AIzaSyDthz0NKdaynPtzwSKYuHcLWkdIFHGC7kg"/>
+
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -36,4 +42,7 @@
             android:value="2" />
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
 </manifest>

@@ -5,11 +5,12 @@ import 'package:travel_app/app/configs/app_fontweights.dart';
 import 'package:travel_app/app/utils/custom_widgets/common_text.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  //@override
+  //Size get preferredSize => const Size.fromHeight(kToolbarHeight + tabB.preferredSize.height);
 
-  const CustomAppBar({this.title, super.key});
+  const CustomAppBar({this.title, super.key, this.tabB});
   final String? title;
+  final TabBar? tabB;
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -17,8 +18,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       // backgroundColor: Color(0xFFecf1e1),
       elevation: 0.0,
       title: CommonText(text: title ?? '', weight: AppFontWeights.appTextFontWeightMedium, fontSize: 20.0),
+      bottom: tabB,
     );
   }
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + (tabB != null ? tabB!.preferredSize.height : 0));
+
 }
 // class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 //   @override

@@ -252,7 +252,7 @@ class _MulticityFlightScreenState extends State<MulticityFlightScreen> {
                                   () {
                                     // ignore: unrelated_type_equality_checks
                                     return searchController
-                                                .mySearch1.value[index] ==
+                                                .mySearch1[index].value ==
                                             ""
                                         ? Container()
                                         : Container(
@@ -363,7 +363,7 @@ class _MulticityFlightScreenState extends State<MulticityFlightScreen> {
                                   () {
                                     // ignore: unrelated_type_equality_checks
                                     return searchController
-                                                .mySearch2.value[index] ==
+                                                .mySearch2[index].value ==
                                             ""
                                         ? Container()
                                         : Container(

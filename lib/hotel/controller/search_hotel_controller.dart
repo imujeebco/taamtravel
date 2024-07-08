@@ -14,6 +14,7 @@ class SearchHotelController extends GetxController {
   var isLoading = false.obs;
   var searchHotelModel = SearchHotelModel().obs;
   var searchRoomModel = SearchRoomModel().obs;
+  List<SearchHotelModel?> responseList = <SearchHotelModel?>[].obs;
 
   Future<void> loadGetxData() async {
     await dataController.loadMyData();
@@ -58,6 +59,52 @@ class SearchHotelController extends GetxController {
 
       if (response.statusCode == 200) {
         isLoading.value = false;
+      } else {
+        print('Error: ${response.statusCode}');
+        Get.showSnackbar(gradientSnackbar(
+            "Failure",
+            "${jsonData["error"] ?? "Something went wrong"}",
+            AppColors.red,
+            Icons.warning_rounded));
+      }
+    } catch (e) {
+      print('Error: $e');
+      Get.showSnackbar(gradientSnackbar("Failure", "Something went wrong",
+          AppColors.orange, Icons.warning_rounded));
+      isLoading.value = false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<SearchHotelModel?> MultifetchHotels(multiHotel) async {
+    isLoading.value = true;
+    try {
+      var headers = {
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer ${dataController.myToken.value}'
+      };
+      var body = json.encode(multiHotel);
+      print("Body: $body");
+
+      var response = await http.post(
+        Uri.parse('${baseURL}api/HotelBooking/search'),
+        headers: headers,
+        body: body,
+      );
+      print("This is my Token: ${dataController.myToken.value}");
+
+      var jsonData = json.decode(response.body) as Map<String, dynamic>;
+      searchHotelModel.value = SearchHotelModel.fromJson(jsonData);
+
+      print("**** Search Hotels Response ****");
+      print("Search Hotels Controller: ${response.body}");
+
+      if (response.statusCode == 200) {
+        isLoading.value = false;
+
+        return searchHotelModel.value;
+
       } else {
         print('Error: ${response.statusCode}');
         Get.showSnackbar(gradientSnackbar(
@@ -122,6 +169,43 @@ class SearchHotelController extends GetxController {
       Get.showSnackbar(gradientSnackbar("Failure", "Something went wrong",
           AppColors.orange, Icons.warning_rounded));
       isLoading.value = false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<SearchHotelModel?> multiFetchHotels(multiHotel) async {
+    isLoading.value = true;
+    try {
+      var headers = {'Content-Type': 'application/json', 'authorization': 'Bearer ${dataController.myToken.value}'};
+      var body = json.encode(multiHotel);
+      var response = await http.post(
+        Uri.parse('${baseURL}api/HotelBooking/search'),
+        headers: headers,
+        body: body,
+      );
+      print("This is my Token: ${dataController.myToken.value}");
+
+      var jsonData = json.decode(response.body) as Map<String, dynamic>;
+      searchHotelModel.value = SearchHotelModel.fromJson(jsonData);
+
+      print("**** oneWayflightController Response ****");
+      print("oneWayflightController: ${response.body}");
+
+      if (response.statusCode == 200) {
+        isLoading.value = false;
+
+        return searchHotelModel.value;
+      } else {
+        print('Error: ${response.statusCode}');
+        Get.showSnackbar(gradientSnackbar("Failure", "${jsonData["error"] ?? "Something went wrong"}", AppColors.red, Icons.warning_rounded));
+        return null;
+      }
+    } catch (e) {
+      print('Error: $e');
+      Get.showSnackbar(gradientSnackbar("Failure", "Something went wrong", AppColors.orange, Icons.warning_rounded));
+      isLoading.value = false;
+      return null;
     } finally {
       isLoading.value = false;
     }

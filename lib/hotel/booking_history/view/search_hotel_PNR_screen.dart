@@ -120,7 +120,7 @@ class _SearchPNRScreenState extends State<SearchHotelPNRScreen> {
                         child: CircularProgressIndicator(),
                       );
                     } else {
-                      if (searchPNRController.searchPNRModel.value.flights ==
+                      if (searchPNRController.searchHotelPNRModel.value.hotels ==
                           null) {
                         return Center(
                           child: Column(
@@ -141,8 +141,8 @@ class _SearchPNRScreenState extends State<SearchHotelPNRScreen> {
                         );
                       } else {
                         var data1 =
-                            searchPNRController.searchPNRModel.value.flights;
-                        var data0 = searchPNRController.searchPNRModel.value;
+                            searchPNRController.searchHotelPNRModel.value.hotels;
+                        var data0 = searchPNRController.searchHotelPNRModel.value;
                         return Expanded(
                             child: ListView.builder(
                                 physics: const BouncingScrollPhysics(),
@@ -194,50 +194,45 @@ class _SearchPNRScreenState extends State<SearchHotelPNRScreen> {
                                               ],
                                             ),
                                             0.02.ph,
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                            Column(
+                                              // mainAxisAlignment:
+                                              //     MainAxisAlignment
+                                              //         .spaceBetween,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+
                                               children: [
-                                                FromToFlightWidget(
-                                                  date: formatDate(data1[index]
-                                                      .outBound!
-                                                      .departureDateTime
-                                                      .toString()),
-                                                  time: formatTime(data1[index]
-                                                      .outBound!
-                                                      .departureDateTime
-                                                      .toString()),
-                                                  city:
-                                                      '${data1[index].outBound!.departure}',
-                                                ),
-                                                Column(
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
-                                                    Icon(
-                                                      FontAwesomeIcons.plane,
-                                                      color: AppColors
-                                                          .appColorPrimary,
-                                                      size: 20.0,
+                                                    Text('CheckIn: '),
+                                                    CheckInOutWidget(
+                                                      date: formatDate(data1[index]
+                                                          .checkIn
+                                                          .toString()),
                                                     ),
-                                                    // 0.01.ph,
-                                                    // CommonText(
-                                                    //   text:
-                                                    //       bookings.tripType.toString(),
-                                                    //   fontSize: 10.0,
-                                                    // )
                                                   ],
                                                 ),
-                                                FromToFlightWidget(
-                                                  date: formatDate(data1[index]
-                                                      .inBound!
-                                                      .arrivalDateTime
-                                                      .toString()),
-                                                  time: formatTime(data1[index]
-                                                      .inBound!
-                                                      .arrivalDateTime
-                                                      .toString()),
-                                                  city:
-                                                      '${data1[index].inBound!.arrival}',
+                                                0.02.ph,
+                                                Icon(
+                                                  FontAwesomeIcons.solidBuilding,
+                                                  color: AppColors
+                                                      .appColorPrimary,
+                                                  size: 20.0,
+                                                ),
+                                                0.02.ph,
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text('CheckOut: '),
+                                                    CheckInOutWidget(
+                                                      date: formatDate(data1[index]
+                                                          .checkOut
+                                                          .toString()),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
@@ -394,6 +389,29 @@ class _SearchPNRScreenState extends State<SearchHotelPNRScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CheckInOutWidget extends StatelessWidget {
+  const CheckInOutWidget({
+    required this.date,
+    super.key,
+  });
+
+  final String date;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonText(
+          text: date, //'Fri 29 Dec 23',
+          fontSize: 10.0,
+          weight: FontWeight.bold,
+        ),
+      ],
     );
   }
 }

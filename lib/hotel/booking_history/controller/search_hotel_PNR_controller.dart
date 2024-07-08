@@ -9,11 +9,12 @@ import '../../../app/configs/app_colors.dart';
 import '../../../app/data/data_controller.dart';
 import '../../../app/utils/api_utility/api_url.dart';
 import '../../../app/utils/custom_widgets/gradient_snackbar.dart';
+import '../model/search_hotel_PNR_model.dart';
 
 class SearchHotelPNRController extends GetxController {
   final DataController dataController = Get.put(DataController());
   var isLoading = false.obs;
-  var searchPNRModel = SearchPNRModel().obs;
+  var searchHotelPNRModel = SearchHotelPNRModel().obs;
 
   Future<void> loadGetxData() async {
     await dataController.loadMyData();
@@ -38,7 +39,7 @@ class SearchHotelPNRController extends GetxController {
           headers: headers);
 
       var jsonData = json.decode(response.body) as Map<String, dynamic>;
-      searchPNRModel.value = SearchPNRModel.fromJson(jsonData);
+      searchHotelPNRModel.value = SearchHotelPNRModel.fromJson(jsonData);
 
       print("**** SearchPNR Response ****");
       print("PNR Controller: ${response.body}");

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:travel_app/app/configs/app_colors.dart';
 import 'package:travel_app/app/configs/app_size_config.dart';
 import 'package:travel_app/app/utils/custom_widgets/common_text.dart';
+import 'package:travel_app/hotel/view/Hotel_tabs/multiple_accommodation_tab.dart';
 
 import '../../airline/home_bottom_nav/controller/search_controller.dart';
 import 'Hotel_tabs/accommodation_tab.dart';
@@ -97,7 +98,7 @@ class _HotelScreenState extends State<HotelScreen> {
                 child: TabBarView(
                   children: [
                     AccommodationTabView(),
-                    AccommodationTabView(),
+                    MultipleAccommodationTabView(),
                   ],
                 ),
               ),

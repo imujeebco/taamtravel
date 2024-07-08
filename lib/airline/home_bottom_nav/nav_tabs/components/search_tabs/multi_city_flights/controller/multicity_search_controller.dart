@@ -14,8 +14,8 @@ class MulticitySearchController1 extends GetxController {
   final DataController dataController = Get.put(DataController());
   // RxString mySearch1 = ''.obs;
   // RxString mySearch2 = ''.obs;
-  RxList mySearch1 = ["", "", "", "", "", "", ""].obs;
-  RxList mySearch2 = ["", "", "", "", "", "", ""].obs;
+  RxList mySearch1 = [''.obs, ''.obs, ''.obs,''.obs, ''.obs, ''.obs, ''.obs].obs;
+  RxList mySearch2 = [''.obs, ''.obs, ''.obs, ''.obs, ''.obs, ''.obs, ''.obs].obs;
   var isLoading = false.obs;
   var searchModel = SearchModel().obs;
 
@@ -33,7 +33,7 @@ class MulticitySearchController1 extends GetxController {
 ///////////////////////////////////////////////////////////////////////////
 
   Future<void> fetchMulticitySearch1(String search, int index) async {
-    mySearch1.value[index] = search;
+    mySearch1[index].value = search;
     isLoading.value = true;
     update();
     try {
@@ -67,7 +67,7 @@ class MulticitySearchController1 extends GetxController {
   }
 
   Future<void> fetchMulticitySearch2(String search, int index) async {
-    mySearch2.value[index] = search;
+    mySearch2[index].value = search;
     isLoading.value = true;
     update();
     try {

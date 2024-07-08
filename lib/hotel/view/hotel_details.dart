@@ -1,5 +1,7 @@
 // ignore_for_file: unnecessary_question_mark
 
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -21,6 +23,7 @@ import 'package:travel_app/hotel/view/Hotel_tabs/search_room_model.dart';
 
 import '../../app/data/data_controller.dart';
 import '../../app/utils/custom_functions/app_alerts.dart';
+import '../model/booking_request.dart';
 import 'Hotel_tabs/search_hotel_model.dart';
 
 // ignore: must_be_immutable
@@ -187,6 +190,18 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
 
     bool _isExpanded = false;
 
+    String jsonString = jsonEncode(widget.dataMap);
+
+    var bookingRequest = BookingRequest.fromJson(json.decode(jsonString));
+    // Calculate total adults and total children and infants
+
+    // Check if rooms is not null before iterating
+    if (bookingRequest.rooms != null) {
+      for (Room room in bookingRequest.rooms!) {
+        // widget.totalAdults += room.adults;
+        // widget.totalChildrenAndInfant += room.childrenAndInfant;
+      }
+    }
 
     return Container(
       padding: EdgeInsets.fromLTRB(10.0, 10, 10, 10),
@@ -200,7 +215,7 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
           // 0.01.ph,
 
           CommonText(
-            text: 'Karachi',
+            text: '${bookingRequest.destination}',
             weight: FontWeight.bold,
             fontSize: 12.0,
             color: AppColors.appColorPrimary,
