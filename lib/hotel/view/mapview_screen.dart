@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
@@ -5,7 +6,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/rendering.dart';
 import 'package:travel_app/hotel/view/Hotel_tabs/search_hotel_model.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
+import '../model/booking_request.dart';
 import 'hotel_details.dart';
 
 // void main() => runApp(MyApp());
@@ -36,12 +39,45 @@ class _AccommodationScreenState extends State<AccommodationScreen> {
   bool _showCard = false;
   Hotels? _selectedHotel;
   Set<Marker> _markers = {};
+  LatLng? _coordinates;
 
   @override
   void initState() {
     super.initState();
-    _setCustomMarkers();
+
+    String jsonString = jsonEncode(widget.dataMap);
+
+    var bookingRequest = BookingRequest.fromJson(json.decode(jsonString));
+
+    _getCoordinates(bookingRequest.destination ?? '');
+
     //var h = widget.hotels;
+  }
+
+  Future<void> _getCoordinates(String address) async {
+    final String apiKey = 'AIzaSyDthz0NKdaynPtzwSKYuHcLWkdIFHGC7kg';
+    final String url = 'https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$apiKey';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['status'] == 'OK') {
+        final location = data['results'][0]['geometry']['location'];
+        setState(() {
+          _coordinates = LatLng(location['lat'], location['lng']);
+          //'Latitude: ${location['lat']}, Longitude: ${location['lng']}';
+          _setCustomMarkers();
+        });
+      } else {
+        setState(() {
+          _coordinates = null;
+        });
+      }
+    } else {
+      setState(() {
+        //_coordinates = 'Failed to fetch coordinates';
+      });
+    }
   }
 
   Future<void> _setCustomMarkers() async {
@@ -66,6 +102,11 @@ class _AccommodationScreenState extends State<AccommodationScreen> {
           onTap: () {
             setState(() {
               _selectedHotel = hotel;
+
+              widget.hotels?.forEach((element) {
+                element.selected = false;
+              });
+              hotel.selected = true;
               _showCard = true;
               _setCustomMarkers();
             });
@@ -238,14 +279,18 @@ class _AccommodationScreenState extends State<AccommodationScreen> {
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () {},
+          onPressed: () {
+            Get.back();
+          },
         ),
       ),
-      body: Stack(
+      body: _coordinates == null ? Center(
+        child: CircularProgressIndicator(),
+      ) : Stack(
         children: [
           GoogleMap(
             initialCameraPosition: CameraPosition(
-              target: LatLng(25.276987, 55.296249),
+              target: _coordinates!,
               zoom: 12,
             ),
             markers: _markers,
@@ -300,14 +345,19 @@ class AccommodationCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0,left: 15.0),
-                  child: Text('${hotel.hotelName ?? ''}',
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 15.0, left: 15.0),
+                    child: Text(
+                      hotel.hotelName ?? '',
                       style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontWeight:
-                          FontWeight.bold)
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 2, // Set the maximum number of lines you want
+                      overflow: TextOverflow.ellipsis, // Handle overflow with ellipsis
+                    ),
                   ),
                 ),
                 IconButton(
@@ -331,11 +381,16 @@ class AccommodationCard extends StatelessWidget {
                     children: [
                       Icon(Icons.bed_sharp),
                       SizedBox(width: 5),
-                      Text(
-                        hotel.room ?? '',
-                        style: TextStyle(
+                      Expanded(
+                        child: Text(
+                          hotel.room ?? '',
+                          style: TextStyle(
                             color: Colors.black,
-                            fontSize: 12),
+                            fontSize: 12,
+                          ),
+                          maxLines: 2, // Set the maximum number of lines you want
+                          overflow: TextOverflow.ellipsis, // Handle overflow with ellipsis
+                        ),
                       ),
                     ],
                   ),

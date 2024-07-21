@@ -69,7 +69,7 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                 child: CircularProgressIndicator(),
               );
             } else {
-              if (searchHotelController.searchHotelModel.value.hotels == null) {
+              if (searchHotelController.searchHotelModel.value.hotels == null || searchHotelController.searchHotelModel.value.hotels?.length == 0) {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
