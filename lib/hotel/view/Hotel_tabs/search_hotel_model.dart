@@ -2,6 +2,7 @@ class SearchHotelModel {
   int? id;
   String? errorMessage;
   String? stackTrace;
+  String? destination;
   List<Hotels>? hotels;
 
   SearchHotelModel({this.id, this.errorMessage, this.stackTrace, this.hotels});

@@ -1,123 +1,120 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'dart:typed_data';
+import 'package:flutter/rendering.dart';
+import 'package:travel_app/hotel/view/Hotel_tabs/search_hotel_model.dart';
+import 'package:get/get.dart';
 
-import 'package:travel_app/app/configs/app_colors.dart';
-import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
+import 'hotel_details.dart';
 
-class AccommodationsPage extends StatefulWidget {
+// void main() => runApp(MyApp());
+//
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: AccommodationScreen(),
+//     );
+//   }
+// }
+
+class AccommodationScreen extends StatefulWidget {
+
+  List<Hotels>? hotels;
+  Hotels? _selectedHotel;
+  Map dataMap;
+  String Id;
+
+  AccommodationScreen(this.hotels, this.dataMap, this.Id);
+
   @override
-  _AccommodationsPageState createState() => _AccommodationsPageState();
+  _AccommodationScreenState createState() => _AccommodationScreenState();
 }
 
-class _AccommodationsPageState extends State<AccommodationsPage> {
-  GoogleMapController? mapController;
-  final LatLng _center =
-  const LatLng(2.0469, 45.3182); // Coordinates of Mogadishu
+class _AccommodationScreenState extends State<AccommodationScreen> {
+  bool _showCard = false;
+  Hotels? _selectedHotel;
   Set<Marker> _markers = {};
 
-  void _onMapCreated(GoogleMapController controller) async {
-    setState(() {
-      mapController = controller;
-    });
-    List<Map<String, dynamic>> locations = [
-      {"lat": 2.0469, "lng": 45.3182, "price": "120"}, // Central Mogadishu
-      {
-        "lat": 2.0580,
-        "lng": 45.3042,
-        "price": "240"
-      }, // Near the Mogadishu Stadium
-      {
-        "lat": 2.0349,
-        "lng": 45.3438,
-        "price": "130"
-      }, // Close to Mogadishu University
-      {
-        "lat": 2.0402,
-        "lng": 45.3273,
-        "price": "210"
-      }, // Aden Adde International Airport
-      {"lat": 2.0350, "lng": 45.3375, "price": "500"}, // Liido Beach
-      {"lat": 2.0312, "lng": 45.3443, "price": "100"}, // Banadir Hospital
-      {"lat": 2.0492, "lng": 45.3044, "price": "70"}, // Mogadishu Lighthouse
-      {"lat": 2.0641, "lng": 45.3267, "price": "80"}, // The Village Restaurant
-      {"lat": 2.0429, "lng": 45.3316, "price": "250"}, // Mogadishu Mall
-      {"lat": 2.0329, "lng": 45.3154, "price": "100"}, // Peace Hotel
-      {"lat": 2.0550, "lng": 45.3187, "price": "50"}, // Taleh Park
-      {"lat": 2.0434, "lng": 45.3412, "price": "123"}, // Jazeera Beach
-      {
-        "lat": 2.0287,
-        "lng": 45.3184,
-        "price": "135"
-      }, // Somali National Theatre
-    ];
+  @override
+  void initState() {
+    super.initState();
+    _setCustomMarkers();
+    //var h = widget.hotels;
+  }
 
-    for (int i = 0; i < locations.length; i++) {
-      var location = locations[i];
-      final image = await createCustomMarkerImage(location['price']);
-      final bytes = await getImageBytes(image);
+  Future<void> _setCustomMarkers() async {
+    Set<Marker> markers = {};
+    for (var hotel in widget.hotels!) {
+      final BitmapDescriptor markerIcon = await _createCustomMarker(
+        hotel,
+        hotel.selected ?? false ? Colors.green : Colors.white,
+      );
 
-      setState(() {
-        _markers.add(
-          Marker(
-            markerId: MarkerId('marker-${location['price']}'),
-            position: LatLng(location['lat'], location['lng']),
-            icon: BitmapDescriptor.fromBytes(bytes),
-            infoWindow: InfoWindow(
-              onTap: () {
+      String? latitudeString = hotel.latitude; // Example value from your data source
+      String? longitudeString = hotel.longitude; // Example value from your data source
 
-              },
-              title:
-              'Marker ${i + 1}', // Using index + 1 for user-friendly numbering
-              snippet:
-              'Price: \$${location['price']} at Lat: ${location['lat']}, Lng: ${location['lng']}',
-            ),
-          ),
+      double? latitude = latitudeString != null ? double.tryParse(latitudeString) : null;
+      double? longitude = longitudeString != null ? double.tryParse(longitudeString) : null;
+
+      if (latitude != null && longitude != null) {
+        final marker = Marker(
+          markerId: MarkerId(hotel.id.toString()), // Ensure you have a unique ID
+          position: LatLng(latitude, longitude), // Ensure you have the latitude and longitude
+          icon: markerIcon,
+          onTap: () {
+            setState(() {
+              _selectedHotel = hotel;
+              _showCard = true;
+              _setCustomMarkers();
+            });
+          },
         );
-      });
+        markers.add(marker);
+      } else {
+        // Handle the case where the conversion fails
+        print("Invalid latitude or longitude");
+      }
+
     }
-  }
 
-  bool _mapInteractionEnabled = true;
-  Future<void> _onAddMarkers() async {
-    final image = await createCustomMarkerImage("Your Text Here");
-    final bytes = await getImageBytes(image);
     setState(() {
-      _markers.add(
-        Marker(
-          markerId: MarkerId('id-1'),
-          position: LatLng(45.521563, -122.677433),
-          icon: BitmapDescriptor.fromBytes(bytes),
-          infoWindow: InfoWindow(
-            title: 'Marker 1',
-            snippet: 'This is a snippet for Marker 1',
-          ),
-        ),
-      );
-
-      _markers.add(
-        Marker(
-          markerId: MarkerId('id-2'),
-          position: LatLng(45.525, -122.67),
-          icon: BitmapDescriptor.fromBytes(bytes),
-          infoWindow: InfoWindow(
-            title: 'Marker 2',
-            snippet: 'This is a snippet for Marker 2',
-          ),
-        ),
-      );
-
-      // Add more markers if needed
+      _markers = markers;
     });
   }
 
-  Future<ui.Image> createCustomMarkerImage(String price) async {
+  // Future<void> _setCustomMarkers() async {
+  //   final selectedMarker = await _createCustomMarker('298', Colors.green);
+  //   final unselectedMarker = await _createCustomMarker('298', Colors.white);
+  //
+  //   setState(() {
+  //     _markers = {
+  //       Marker(
+  //         markerId: MarkerId('1'),
+  //         position: LatLng(25.276987, 55.296249),
+  //         icon: _selectedMarkerId == MarkerId('1') ? selectedMarker : unselectedMarker,
+  //         onTap: () {
+  //           setState(() {
+  //             _selectedMarkerId = MarkerId('1');
+  //             _showCard = true;
+  //             _setCustomMarkers();
+  //           });
+  //         },
+  //       ),
+  //       // Add other markers here
+  //     };
+  //   });
+  // }
+
+  Future<BitmapDescriptor> _createCustomMarker(Hotels hotel, Color color) async {
+    final ui.Image markerImage = await createCustomMarkerImage(hotel, color);
+    final ByteData? byteData = await markerImage.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List uint8List = byteData!.buffer.asUint8List();
+    return BitmapDescriptor.fromBytes(uint8List);
+  }
+
+  Future<ui.Image> createCustomMarkerImage(Hotels hotel, Color color) async {
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
     final Paint paint = Paint();
@@ -125,173 +122,233 @@ class _AccommodationsPageState extends State<AccommodationsPage> {
       textDirection: TextDirection.ltr,
     );
 
-    final double width = 100; // Reduced width
-    final double height = 80; // Reduced height
+    // Draw the price text to measure its width
+    textPainter.text = TextSpan(
+      text: '${hotel.currency} ' + hotel.totalAmount.toString(),
+      style: TextStyle(
+        fontSize: 18,
+        color: color == Colors.white ? Colors.black : Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+    textPainter.layout();
+
+    final double textWidth = textPainter.width;
+    final double textHeight = textPainter.height;
+
+    // Calculate width and height based on text size
+    final double padding = 10;
+    final double cornerRadius = 10;
+    final double width = textWidth + 2 * padding; // Add padding on both sides
+    final double height = textHeight + 2 * padding + 20; // Add padding and space for the tail
 
     // Draw the pin shape
-    paint.color = AppColors.appColorPrimary; // Main color of the pin
+    paint.color = color; // Main color of the pin
     Path path = Path();
-    path.addOval(Rect.fromCircle(
-        center: Offset(width / 2, 30), radius: 30)); // Smaller head of the pin
-    path.moveTo(width / 2 - 15, 55);
-    path.lineTo(width / 2, height); // Tail of the pin
-    path.lineTo(width / 2 + 15, 55);
+    path.addRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, width, textHeight + 2 * padding), Radius.circular(cornerRadius))); // Rectangle with rounded corners
+    path.moveTo(width / 2 - 10, textHeight + 2 * padding);
+    path.lineTo(width / 2, height);
+    path.lineTo(width / 2 + 10, textHeight + 2 * padding);
     path.close();
     canvas.drawPath(path, paint);
 
     // Outline
     paint
-      ..color = AppColors.appColorPrimary
+      ..color = Colors.black
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3; // Smaller stroke width
+      ..strokeWidth = 2; // Stroke width for the outline
     canvas.drawPath(path, paint);
 
     // Draw the price text
     paint.style = PaintingStyle.fill;
-    textPainter.text = TextSpan(
-      text: "\$" + price,
-      style: TextStyle(
-          fontSize: 18,
-          color: Colors.white,
-          fontWeight: FontWeight.bold), // Smaller font size
-    );
-    textPainter.layout();
-    textPainter.paint(
-        canvas,
-        Offset(width * 0.5 - textPainter.width * 0.5,
-            25)); // Adjusted text position for smaller head
+    textPainter.paint(canvas, Offset(padding, padding)); // Add padding around the text
 
-    final ui.Image markerAsImage = await pictureRecorder
-        .endRecording()
-        .toImage(width.toInt(), height.toInt());
+    final ui.Image markerAsImage = await pictureRecorder.endRecording().toImage(width.toInt(), height.toInt());
     return markerAsImage;
   }
 
-  Future<Uint8List> getImageBytes(ui.Image image) async {
-    final ByteData? byteData =
-    await image.toByteData(format: ui.ImageByteFormat.png);
-    return byteData!.buffer.asUint8List();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _requestPermissions();
-  }
-
-  Future<void> _requestPermissions() async {
-    await Permission.location.request();
-  }
+  // Future<ui.Image> createCustomMarkerImage(String price, Color color) async {
+  //   final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+  //   final Canvas canvas = Canvas(pictureRecorder);
+  //   final Paint paint = Paint();
+  //   final TextPainter textPainter = TextPainter(
+  //     textDirection: TextDirection.ltr,
+  //   );
+  //
+  //   // Draw the price text to measure its width
+  //   textPainter.text = TextSpan(
+  //     text: "US\$" + price,
+  //     style: TextStyle(
+  //       fontSize: 18,
+  //       color: Colors.white,
+  //       fontWeight: FontWeight.bold,
+  //     ),
+  //   );
+  //   textPainter.layout();
+  //
+  //   final double textWidth = textPainter.width;
+  //   final double textHeight = textPainter.height;
+  //
+  //   // Calculate width and height based on text size
+  //   final double width = textWidth + 20; // Add padding
+  //   final double height = textHeight + 50; // Add padding and space for the tail
+  //
+  //   // Draw the pin shape
+  //   paint.color = color; // Main color of the pin
+  //   Path path = Path();
+  //   path.addRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, width, textHeight + 20), Radius.circular(10))); // Rectangle with rounded corners
+  //   path.moveTo(width / 2 - 10, textHeight + 20);
+  //   path.lineTo(width / 2, height);
+  //   path.lineTo(width / 2 + 10, textHeight + 20);
+  //   path.close();
+  //   canvas.drawPath(path, paint);
+  //
+  //   // Outline
+  //   paint
+  //     ..color = Colors.black
+  //     ..style = PaintingStyle.stroke
+  //     ..strokeWidth = 3; // Smaller stroke width
+  //   canvas.drawPath(path, paint);
+  //
+  //   // Draw the price text
+  //   paint.style = PaintingStyle.fill;
+  //   textPainter.paint(canvas, Offset((width - textWidth) / 2, 10)); // Center the text
+  //
+  //   final ui.Image markerAsImage = await pictureRecorder.endRecording().toImage(width.toInt(), height.toInt());
+  //   return markerAsImage;
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Google Maps Demo'),
-        backgroundColor: Colors.green[700],
-      ),
-      body: Container(
-        height: 300,
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: GestureDetector(
-          onVerticalDragUpdate: (_) {},
-          child: AbsorbPointer(
-            absorbing: !_mapInteractionEnabled,
-            child: GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 11.0,
-              ),
-              markers: _markers,
-              myLocationEnabled: true,
-              gestureRecognizers: <Factory<
-                  OneSequenceGestureRecognizer>>{
-                Factory<OneSequenceGestureRecognizer>(
-                      () => EagerGestureRecognizer(),
-                ),
-              },
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Set<Marker> _createMarkers() {
-  //   return {
-  //     Marker(
-  //       markerId: MarkerId('exampleMarker'),
-  //       position: _initialPosition,
-  //       infoWindow: InfoWindow(
-  //         title: 'Example Accommodation',
-  //         snippet: 'US\$34 per night',
-  //       ),
-  //     ),
-  //   };
-  // }
-}
-
-class AccommodationDetailsCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
+        backgroundColor: Colors.white,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image.network(
-            //   'https://via.placeholder.com/150',
-            //   width: 100,
-            //   height: 100,
-            //   fit: BoxFit.cover,
-            // ),
-            SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Roda Links Al Nasr',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 8),
-                  Text('⭐ 4.0'),
-                  SizedBox(height: 8),
-                  Text('Nice'),
-                  SizedBox(height: 8),
-                  Text('1 Classic Double or Twin'),
-                  SizedBox(height: 8),
-                  Text('ROOM ONLY'),
-                ],
-              ),
+            Text(
+              'Accommodations',
+              style: TextStyle(fontSize: 18),
             ),
             Text(
-              'US\$34',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              '(${widget.hotels?.length} Hotels)',
+              style: TextStyle(fontSize: 14),
             ),
           ],
         ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {},
+        ),
+      ),
+      body: Stack(
+        children: [
+          GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(25.276987, 55.296249),
+              zoom: 12,
+            ),
+            markers: _markers,
+          ),
+          if (_showCard)
+            Positioned(
+              bottom: 20,
+              left: 20,
+              right: 20,
+              child: AccommodationCard(onClose: () {
+                setState(() {
+                  _showCard = false;
+                  _selectedHotel = null;
+                  _setCustomMarkers();
+                });
+              }, hotel: _selectedHotel!, dataMap: widget.dataMap, Id: widget.Id,),
+            ),
+          // Positioned(
+          //   bottom: 80,
+          //   left: 20,
+          //   child: FloatingActionButton(
+          //     onPressed: () {},
+          //     child: Icon(Icons.filter_list),
+          //     backgroundColor: Colors.green,
+          //   ),
+          // ),
+        ],
       ),
     );
   }
 }
 
-class FiltersButton extends StatelessWidget {
+class AccommodationCard extends StatelessWidget {
+  final VoidCallback onClose;
+  final Hotels hotel;
+  Map dataMap;
+  String Id;
+
+  AccommodationCard({required this.onClose,required this.hotel,required this.dataMap,required this.Id});
+
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () {},
-      icon: Icon(Icons.filter_list),
-      label: Text('Filters'),
-      style: ElevatedButton.styleFrom(
-        primary: Colors.green,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+    return GestureDetector(
+      onTap: (){
+        Get.to(() => HotelDetailsScreen(dataMap: dataMap , hotel: hotel,searchId: Id,
+        ));
+      },
+      child: Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0,left: 15.0),
+                  child: Text('${hotel.hotelName ?? ''}',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight:
+                          FontWeight.bold)
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: onClose,
+                ),
+              ],
+            ),
+            ListTile(
+              leading: Image.network(
+                '${hotel.imageUrls?[0]}',
+                // width: 100,
+                // height: 100,
+                fit: BoxFit.cover,
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${hotel.address ?? ''}'),
+                  Row(
+                    children: [
+                      Icon(Icons.bed_sharp),
+                      SizedBox(width: 5),
+                      Text(
+                        hotel.room ?? '',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  Text('${hotel.currency ?? ''} ${hotel.totalAmount.toString()}'),
+                ],
+              ),
+              // trailing: IconButton(
+              //   icon: Icon(Icons.favorite_border),
+              //   onPressed: () {},
+              // ),
+            ),
+          ],
         ),
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
     );
   }

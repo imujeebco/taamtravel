@@ -18,6 +18,7 @@ import '../../app/utils/custom_widgets/custom_outline_button.dart';
 
 import '../controller/search_hotel_controller.dart';
 import 'mapview_screen.dart';
+import 'multiple_hotel_details.dart';
 
 // ignore: must_be_immutable
 class MultipleSearchHotelScreen extends StatefulWidget {
@@ -25,6 +26,7 @@ class MultipleSearchHotelScreen extends StatefulWidget {
   final List<BookingRequest> multiAccom;
 
   List<SearchHotelModel?> responseList = <SearchHotelModel?>[].obs;
+  List<SearchHotelModel?> selectedresponseList = <SearchHotelModel?>[].obs;
 
   MultipleSearchHotelScreen({super.key, required this.dataMap, required this.multiAccom});
 
@@ -32,7 +34,7 @@ class MultipleSearchHotelScreen extends StatefulWidget {
   State<MultipleSearchHotelScreen> createState() => _MultipleSearchHotelScreenState();
 }
 
-class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> {
+class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> with TickerProviderStateMixin {
   final SearchHotelController searchHotelController =
   Get.put(SearchHotelController());
   String? filterName = "a";
@@ -40,22 +42,20 @@ class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> {
   int? _selectedOutbound;
   int? _selectedInbound;
   String? selection;
+  late TabController tabController;
 
   // int? selectedCardIndex;
 
   @override
   void initState() {
     super.initState();
+    tabController = TabController(length: widget.multiAccom.length, vsync: this);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       widget.multiAccom.forEach((elem) async {
-        setState(() {
-
-        });
-        searchHotelController.responseList.add(await searchHotelController.MultifetchHotels(elem));
-        setState(() {
-
-        });
+        setState(() {});
+        searchHotelController.responseList.add(await searchHotelController.MultifetchHotels(elem,elem.destination));
+        setState(() {});
       });
     });
   }
@@ -65,334 +65,164 @@ class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> {
     super.dispose();
   }
 
+  void _onNextButtonPressed() {
+    List<Hotels> selectedHotels = [];
+
+    for (var destination in searchHotelController.responseList) {
+      if (destination != null && destination.hotels != null) {
+        for (var hotel in destination.hotels!) {
+          if (hotel.selected == true) {
+            selectedHotels.add(hotel);
+            widget.selectedresponseList.add(destination);
+          }
+        }
+      }
+    }
+
+    if (selectedHotels.length == widget.multiAccom.length) {
+      // Proceed to the next screen or perform the desired action
+      print("All accommodations selected, proceeding to the next step.");
+
+      //Get.to(() => MultipleHotelDetailsScreen(dataMap: widget.dataMap, hotelsList: widget.selectedresponseList,multiAccom: widget.multiAccom));
+    } else {
+      Get.showSnackbar(GetBar(
+        message: "Please select accommodations for all destinations.",
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     HeightWidth(context);
     return DefaultTabController(
-      length: widget.multiAccom.length, // Number of tabs
+      length: widget.multiAccom.length,
       child: Scaffold(
-        backgroundColor: AppColors.appColorAccent,
-        appBar: CustomAppBar(
-          title: "Multiple Accommodations",
-          tabB: TabBar(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text("Multiple Accommodations"),
+          bottom: TabBar(
+            controller: tabController,
             isScrollable: true,
             tabs: widget.multiAccom.map((tab) => Tab(text: tab.destination)).toList(),
           ),
         ),
-        body: searchHotelController.isLoading.value ? Center(
-          child: CircularProgressIndicator(),
-        ) :
-        TabBarView(
-          children: searchHotelController.responseList.map((destination) => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Add PageView before Expanded
-                  Obx(() {
-                    if (searchHotelController.isLoading.value) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      if (destination?.hotels == null) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image(
-                                  height: 110,
-                                  width: 110,
-                                  image: AssetImage("assets/icons/no_location.png")),
-                              SizedBox(height: 10),
-                              Text("No Hotels available",
-                                  style: const TextStyle(
-                                      color: Colors.black26,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w200))
-                            ],
-                          ),
-                        );
-                      } else {
-                        var data1 = destination?.hotels;
-                        //var searchData = destination != null;//searchHotelController.searchHotelModel.value;
+        body: Obx(() {
+          if (searchHotelController.isLoading.value) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return TabBarView(
+              controller: tabController,
+              children: widget.multiAccom.map((tab) {
+                var destination = searchHotelController.responseList.firstWhere((d) => d?.destination == tab.destination, orElse: () => null);
 
-                        return Expanded(
-                          child: Column(
-                            children: [
-                              SizedBox(height: 10),
-                              Expanded(
-                                child: ListView.builder(
-                                  padding: EdgeInsets.all(10),
-                                  physics: const BouncingScrollPhysics(),
-                                  itemCount: data1?.length,
-                                  itemBuilder: (context, index) {
-                                    return
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Card(
-                                            color: data1?[index].selected ?? false
-                                                ? Colors.green.shade100
-                                                : Colors.white,
-                                            clipBehavior: Clip.antiAlias,
-                                            child: InkWell(
-                                              onTap: () {
-                                                setState(() {
-                                                  data1?.forEach((element) {
-                                                    element.selected = false;
-                                                  });
-                                                  data1?[index].selected = true;
-                                                });
-                                              },
-                                              child: Column(
-                                                children: [
-                                                  Stack(
-                                                    alignment: Alignment.topRight,
-                                                    children: [
-                                                      CarouselSlider(
-                                                        items: data1?[index].imageUrls?.map((item) {
-                                                          return Image.network(
-                                                              item,
-                                                              width: MediaQuery.of(
-                                                                  context)
-                                                                  .size
-                                                                  .width,
-                                                              fit: BoxFit.cover);
-                                                        }).toList(),
-                                                        options: CarouselOptions(
-                                                          viewportFraction: 1,
-                                                          height: size.height *
-                                                              0.3, // Customize the height of the carousel
-                                                          autoPlay:
-                                                          true, // Enable auto-play
-                                                          enlargeCenterPage:
-                                                          false, // Increase the size of the center item
-                                                          enableInfiniteScroll:
-                                                          true, // Enable infinite scroll
-                                                          onPageChanged:
-                                                              (index, reason) {
-                                                            // Optional callback when the page changes
-                                                            // You can use it to update any additional UI components
-                                                          },
-                                                        ),
-                                                      ),
-                                                      // GestureDetector(
-                                                      //   onTap: () {
-                                                      //     //onPress();
-                                                      //   },
-                                                      //   child: Padding(
-                                                      //     padding:
-                                                      //     const EdgeInsets.all(
-                                                      //         8.0),
-                                                      //     child: Icon(Icons.favorite,
-                                                      //         color: Colors.red),
-                                                      //   ),
-                                                      // ),
-                                                    ],
-                                                  ),
-                                                  ListTile(
-                                                    //leading: Icon(Icons.arrow_drop_down_circle),
-                                                    title: Text(
-                                                        data1?[index].hotelName ?? '',
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                            FontWeight.bold)),
-                                                    subtitle: Column(
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            if (data1?[index].category == 'S1') ...[
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                            ],
-                                                            if (data1?[index].category == 'S2') ...[
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                            ],
-                                                            if (data1?[index].category == 'S3') ...[
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                            ],
-                                                            if (data1?[index].category == 'S4') ...[
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                            ],
-                                                            if (data1?[index].category == 'S5') ...[
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                              Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                                                            ],
-                                                          ],
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Align(
-                                                    alignment: Alignment.centerLeft,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.only(
-                                                          left: 10.0),
-                                                      child: Text(data1?[index].address ?? '',
-                                                        // 'Karachi - Show on map > 7.62 km from Center',
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                            FontWeight.bold),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Column(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                        const EdgeInsets.only(
-                                                          top: 8.0,
-                                                          left: 8.0,
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            Icon(Icons.bed_sharp),
-                                                            SizedBox(width: 5),
-                                                            Text(
-                                                              data1?[index].room ?? '',
-                                                              style: TextStyle(
-                                                                  color: Colors.black,
-                                                                  fontSize: 12),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      // Padding(
-                                                      //   padding:
-                                                      //       const EdgeInsets.only(
-                                                      //     top: 8.0,
-                                                      //     left: 8.0,
-                                                      //   ),
-                                                      //   child: Row(
-                                                      //     children: [
-                                                      //       Icon(Icons
-                                                      //           .flatware_outlined),
-                                                      //       SizedBox(width: 5),
-                                                      //       Text(
-                                                      //         'BED AND BREAKFAST',
-                                                      //         style: TextStyle(
-                                                      //             color: Colors.black,
-                                                      //             fontSize: 12),
-                                                      //       ),
-                                                      //     ],
-                                                      //   ),
-                                                      // ),
-                                                      if (data1?[index].nonRefundable == 'PARTIALLY_REFUNDABLE')
-                                                        Padding(
-                                                          padding:
-                                                          const EdgeInsets.only(
-                                                            top: 8.0,
-                                                            left: 8.0,
-                                                          ),
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .check_circle_outline,
-                                                                color: Colors.green,
-                                                              ),
-                                                              Text(
-                                                                ' Free cancellation',
-                                                                style: TextStyle(
-                                                                    color: Colors.green,
-                                                                    fontSize: 12),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      // SizedBox(height: 10),
-                                                      // Align(
-                                                      //   alignment:
-                                                      //   Alignment.centerLeft,
-                                                      //   child: Padding(
-                                                      //     padding:
-                                                      //     const EdgeInsets.only(
-                                                      //       top: 8.0,
-                                                      //       left: 8.0,
-                                                      //     ),
-                                                      //     child: CustomButton(
-                                                      //       height: 40,
-                                                      //       width: 140,
-                                                      //       text: 'See options',
-                                                      //       onPress: () {
-                                                      //         print("tapped");
-                                                      //         Get.to(() => HotelDetailsScreen(dataMap: widget.dataMap , hotel: data1![index],searchId: destination!.id.toString(),
-                                                      //         ));
-                                                      //       },
-                                                      //     ),
-                                                      //   ),
-                                                      // ),
-                                                      SizedBox(height: 10),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
+                if (destination == null || destination.hotels == null) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image(height: 110, width: 110, image: AssetImage("assets/icons/no_location.png")),
+                        SizedBox(height: 10),
+                        Text("No Hotels available", style: const TextStyle(color: Colors.black26, fontSize: 20, fontWeight: FontWeight.w200)),
+                      ],
+                    ),
+                  );
+                }
+
+                var hotels = destination.hotels;
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.all(10),
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: hotels?.length,
+                        itemBuilder: (context, index) {
+                          var hotel = hotels?[index];
+                          return Card(
+                            color: hotel?.selected ?? false ? Colors.green.shade100 : Colors.white,
+                            clipBehavior: Clip.antiAlias,
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  hotels?.forEach((element) {
+                                    element.selected = false;
+                                  });
+                                  hotel?.selected = true;
+                                });
+                              },
+                              child: Column(
+                                children: [
+                                  Stack(
+                                    alignment: Alignment.topRight,
+                                    children: [
+                                      CarouselSlider(
+                                        items: hotel?.imageUrls?.map((item) {
+                                          return Image.network(item, width: size.width, fit: BoxFit.cover);
+                                        }).toList(),
+                                        options: CarouselOptions(
+                                          viewportFraction: 1,
+                                          height: size.height * 0.3,
+                                          autoPlay: true,
+                                          enlargeCenterPage: false,
+                                          enableInfiniteScroll: true,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  ListTile(
+                                    title: Text(hotel?.hotelName ?? '', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold)),
+                                    subtitle: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: List.generate(hotel?.category?.length ?? 0, (index) {
+                                            return Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1));
+                                          }),
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(hotel?.address ?? '', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.bed_sharp),
+                                            SizedBox(width: 5),
+                                            Text(hotel?.room ?? '', style: TextStyle(color: Colors.black, fontSize: 12)),
+                                          ],
+                                        ),
+                                        if (hotel?.nonRefundable == 'PARTIALLY_REFUNDABLE')
+                                          Row(
+                                            children: [
+                                              Icon(Icons.check_circle_outline, color: Colors.green),
+                                              Text(' Free cancellation', style: TextStyle(color: Colors.green, fontSize: 12)),
+                                            ],
                                           ),
-                                          SizedBox(height: 5),
-                                        ],
-                                      );
-                                  },
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Align(
-                                alignment:Alignment.center,
-                                child: Padding(
-                                  padding:
-                                  const EdgeInsets.only(
-                                    top: 8.0,
-                                    left: 8.0,
+                                        SizedBox(height: 10),
+                                      ],
+                                    ),
                                   ),
-                                  child: CustomButton(
-                                    height: 40,
-                                    width: 140,
-                                    text: 'Next',
-                                    onPress: () {
-                                      print("tapped");
-                                      // Find hotels where selected is true
-                                      List<Hotels>? selectedHotels = data1?.where((hotel) => hotel.selected == true).toList();
-                                      if(selectedHotels?.length == widget.multiAccom.length){
-
-                                      }else{
-                                        Get.showSnackbar(gradientSnackbar(
-                                            "Failure",
-                                            "Please select Accommodations",
-                                            AppColors.red,
-                                            Icons.warning_rounded));
-                                      }
-                                      // Get.to(() => HotelDetailsScreen(dataMap: widget.dataMap , hotel: data1![index],searchId: destination!.id.toString(),
-                                      // ));
-                                    },
-                                  ),
-                                ),
+                                ],
                               ),
-                              SizedBox(height: 10),
-                              //smallMapWidget(context),
-                            ],
-                          ),
-                        );
-                      }
-                    }
-                  }),
-                ],
-              ),
-          )).toList(),
-        ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomButton(
+                        text: 'Next',
+                        onPress: _onNextButtonPressed,
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
+            );
+          }
+        }),
       ),
     );
   }
@@ -538,48 +368,32 @@ class buildFilterButton extends StatelessWidget {
   }
 }
 
-Widget smallMapWidget(BuildContext context) {
-  return GestureDetector(
-    onTap: () {
-      // Handle onTap action here
-
-      print('Map widget tapped!');
-      Get.to(() => AccommodationsPage());
-    },
-    child: Container(
-      height: 50,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.green),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: ElevatedButton(
-          onPressed: () {
-            // Handle button press here
-            print('Map View button pressed!');
-            Get.to(() => AccommodationsPage());
-            // Navigate to map view or perform desired action
-          },
-          child: Text('Map View'),
-        ),
-      ),
-    ),
-  );
-}
-
-
-
-
-class Flight {
-  final String airlineName;
-  final List<Segment> segments;
-
-  Flight({required this.airlineName, required this.segments});
-}
-
-class Segment {
-  final String airlineName;
-
-  Segment({required this.airlineName});
-}
+// Widget smallMapWidget(BuildContext context) {
+//   return GestureDetector(
+//     onTap: () {
+//       // Handle onTap action here
+//
+//       print('Map widget tapped!');
+//       Get.to(() => AccommodationScreen());
+//     },
+//     child: Container(
+//       height: 50,
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(8),
+//         border: Border.all(color: Colors.green),
+//       ),
+//       child: ClipRRect(
+//         borderRadius: BorderRadius.circular(8),
+//         child: ElevatedButton(
+//           onPressed: () {
+//             // Handle button press here
+//             print('Map View button pressed!');
+//             Get.to(() => AccommodationScreen());
+//             // Navigate to map view or perform desired action
+//           },
+//           child: Text('Map View'),
+//         ),
+//       ),
+//     ),
+//   );
+// }

@@ -11,10 +11,10 @@ import 'package:travel_app/airline/home_bottom_nav/views/passenger_details.dart'
 import 'package:travel_app/hotel/view/passenger_details_hotel.dart';
 import 'package:travel_app/app/configs/app_size_config.dart';
 import 'package:travel_app/app/utils/custom_widgets/custom_appbar.dart';
-import '../../../app/data/data_controller.dart';
-import '../../../hotel/model/booking_request.dart';
-import '../../../hotel/view/Hotel_tabs/search_hotel_model.dart';
-import '../../../hotel/view/Hotel_tabs/search_room_model.dart';
+import '../../app/data/data_controller.dart';
+import '../model/booking_request.dart';
+import 'Hotel_tabs/search_hotel_model.dart';
+import 'Hotel_tabs/search_room_model.dart';
 
 class RoomDetailsScreen extends StatefulWidget {
   Map dataMap;

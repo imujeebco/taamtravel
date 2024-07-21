@@ -9,6 +9,7 @@ import 'package:travel_app/app/configs/app_size_config.dart';
 import 'package:travel_app/app/utils/custom_widgets/common_text.dart';
 import 'package:travel_app/app/utils/custom_widgets/custom_appbar.dart';
 import 'package:travel_app/app/utils/custom_widgets/custom_button.dart';
+import 'package:travel_app/hotel/view/Hotel_tabs/search_hotel_model.dart';
 
 import 'hotel_details.dart';
 import '../../app/utils/custom_widgets/custom_outline_button.dart';
@@ -433,18 +434,18 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                                                     },
                                                   ),
                                                 ),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    //onPress();
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Icon(Icons.favorite,
-                                                        color: Colors.red),
-                                                  ),
-                                                ),
+                                                // GestureDetector(
+                                                //   onTap: () {
+                                                //     //onPress();
+                                                //   },
+                                                //   child: Padding(
+                                                //     padding:
+                                                //         const EdgeInsets.all(
+                                                //             8.0),
+                                                //     child: Icon(Icons.favorite,
+                                                //         color: Colors.red),
+                                                //   ),
+                                                // ),
                                               ],
                                             ),
                                             ListTile(
@@ -775,7 +776,7 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      smallMapWidget(context),
+                      smallMapWidget(context,searchHotelController.searchHotelModel.value.hotels,widget.dataMap,searchData.id.toString()),
                     ],
                   ),
                 );
@@ -928,31 +929,14 @@ class buildFilterButton extends StatelessWidget {
   }
 }
 
-Widget smallMapWidget(BuildContext context) {
-  return GestureDetector(
-    onTap: () {
-      // Handle onTap action here
-      print('Map widget tapped!');
-      Get.to(() => AccommodationsPage());
-    },
-    child: Container(
-      height: 50,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.green),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: ElevatedButton(
-          onPressed: () {
-            // Handle button press here
-            print('Map View button pressed!');
-            Get.to(() => AccommodationsPage());
-            // Navigate to map view or perform desired action
-          },
-          child: Text('Map View'),
-        ),
-      ),
+Widget smallMapWidget(BuildContext context, List<Hotels>? hotels, Map dataMap, String Id,) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: CustomButton(
+      text: 'Locations on Map',
+      onPress: (){
+        Get.to(() => AccommodationScreen(hotels,dataMap,Id));
+      },
     ),
   );
 }

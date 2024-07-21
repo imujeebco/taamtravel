@@ -27,19 +27,23 @@ import '../model/booking_request.dart';
 import 'Hotel_tabs/search_hotel_model.dart';
 
 // ignore: must_be_immutable
-class HotelDetailsScreen extends StatefulWidget {
+class MultipleHotelDetailsScreen extends StatefulWidget {
 
   Map dataMap;
-  Hotels hotel;
-  String searchId;
+  // Hotels hotel;
+  // String searchId;
+  final List<BookingRequest> multiAccom;
 
-  HotelDetailsScreen({super.key, required this.dataMap, required this.hotel, required this.searchId});
+  List<SearchHotelModel?> hotelsList = <SearchHotelModel?>[].obs;
+
+
+  MultipleHotelDetailsScreen({super.key, required this.dataMap,required this.multiAccom,required this.hotelsList});
 
   @override
-  State<HotelDetailsScreen> createState() => _HotelDetailsScreenState();
+  State<MultipleHotelDetailsScreen> createState() => _MultipleHotelDetailsScreenState();
 }
 
-class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
+class _MultipleHotelDetailsScreenState extends State<MultipleHotelDetailsScreen> {
   final DataController dataController = Get.put(DataController());
   final SearchHotelController searchHotelController =
       Get.put(SearchHotelController());
@@ -49,7 +53,14 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       dataController.loadMyData();
-      searchHotelController.fetchRooms(widget.dataMap, widget.searchId.toString(),widget.hotel.id.toString());
+      widget.hotelsList.forEach((elem) async {
+        setState(() {});
+        var destination = widget.multiAccom.firstWhere((d) => d.destination == elem?.destination);
+
+        searchHotelController.roomResponseList.add(await searchHotelController.fetchMultiRooms(destination, elem?.id.toString()  ?? '', elem?.hotels?[0].id.toString()  ?? ''));
+        setState(() {});
+      });
+
     });
   }
 
@@ -61,63 +72,74 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     HeightWidth(context);
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Hotel Details',
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // ---------------------------
-            // Text(widget.flightID.toString()),
-            // Text(widget.searchID.toString()),
-            Obx(() {
-              if (searchHotelController.isLoading.value) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                if (widget.hotel == null) {
+    return DefaultTabController(
+      length: widget.hotelsList.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Hotel Details'),
+          bottom: TabBar(
+            //controller: tabController,
+            isScrollable: true,
+            tabs: widget.hotelsList.map((tab) => Tab(text: tab?.destination)).toList(),
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              Obx(() {
+                if (searchHotelController.isLoading.value) {
                   return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.warning_rounded,
-                          size: 88,
-                          color: Colors.grey,
-                        ),
-                        Text("No Data Found",
-                            style: const TextStyle(
-                                color: Colors.black54,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold))
-                      ],
-                    ),
+                    child: CircularProgressIndicator(),
                   );
                 } else {
-                  var data1 = widget.hotel;
-                  return Expanded(
-                      child: ListView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: 1,
-                          itemBuilder: (context, index) {
-                            return Column(
+                  if (searchHotelController.roomResponseList.length > 0) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.warning_rounded,
+                            size: 88,
+                            color: Colors.grey,
+                          ),
+                          Text("No Data Found",
+                              style: const TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold))
+                        ],
+                      ),
+                    );
+                  } else {
+                    var data1 = widget.hotelsList;
+                    return Expanded(
+                      child: TabBarView(
+                        //controller: tabController,
+                        children: widget.hotelsList.map((hotel) {
+                          return ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: 1,
+                            itemBuilder: (context, index) {
+                              return Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  HotelPackageWidget(dataMap: widget.dataMap, hotel: widget.hotel, rooms: searchHotelController.searchRoomModel.value.rooms, searchId: widget.searchId,),
-                                ]);
-                          }));
+                                  HotelPackageWidget(dataMap: widget.dataMap, hotel: hotel!.hotels![index],
+                                      rooms: searchHotelController.roomResponseList[index]?.rooms),
+                                ],
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    );
+                  }
                 }
-              }
-            }),
-            // HotelPackageWidget(name: 'Saver',),
-          ],
+              }),
+            ],
+          ),
         ),
       ),
     );
@@ -130,13 +152,13 @@ class _HotelDetailsScreenState extends State<HotelDetailsScreen> {
 class HotelPackageWidget extends StatefulWidget {
   Map dataMap;
   Hotels hotel;
-  String searchId;
+  // String searchId;
   List<Rooms>? rooms;
 
   HotelPackageWidget({
     required this.dataMap,
     required this.hotel,
-    required this.searchId,
+    // required this.searchId,
     required this.rooms,
 
     super.key,
@@ -828,48 +850,48 @@ class RoomDetailWidget extends StatelessWidget {
               width: w/3,
               text: 'Select',
               onPress: () {
-              Get.to(() => RoomDetailsScreen(
-                dataMap: widget.dataMap,
-                hotel: widget.hotel,
-                searchId: widget.searchId,
-                room: room!,
-                // fare: widget.charges.toStringAsFixed(2),
-                // tax: widget.tax.toStringAsFixed(2),
-                // total: "45",
-                // traveller: widget.traveller,
-                // cabinClass: widget.cabinClass,
-                // searchID: widget.searchID,
-                // flightID: widget.flightID,
-                // departFlight: widget.departFlight,
-                // arriveFlight: widget.arriveFlight,
-                // departFromDate1: widget.departFromDate1,
-                // departFromTime1: widget.departFromTime1,
-                // departFromCode1: widget.departFromCode1,
-                // departFromDate2: widget.departFromDate2,
-                // departFromTime2: widget.departFromTime2,
-                // departFromCode2: widget.departFromCode2,
-                // arriveToDate1: widget.arriveToDate1,
-                // arriveToTime1: widget.arriveToTime1,
-                // arriveToCode1: widget.arriveToCode1,
-                // arriveToDate2: widget.arriveToDate2,
-                // arriveToCode2: widget.arriveToCode2,
-                // arriveToTime2: widget.arriveToTime2,
-                // paymentID: '',
-                // adultCount: widget.adultCount,
-                // childCount: widget.childCount,
-                // infantCount: widget.infantCount,
-                // //
-                // child1age: widget.child1age,
-                // child2age: widget.child2age,
-                // child3age: widget.child3age,
-                // child4age: widget.child4age,
-                // //
-                // infant1age: widget.infant1age,
-                // infant2age: widget.infant2age,
-                // infant3age: widget.infant3age,
-                // infant4age: widget.infant4age,
-                //
-              ));
+              // Get.to(() => RoomDetailsScreen(
+              //   dataMap: widget.dataMap,
+              //   hotel: widget.hotel,
+              //   searchId: widget.searchId,
+              //   room: room!,
+              //   // fare: widget.charges.toStringAsFixed(2),
+              //   // tax: widget.tax.toStringAsFixed(2),
+              //   // total: "45",
+              //   // traveller: widget.traveller,
+              //   // cabinClass: widget.cabinClass,
+              //   // searchID: widget.searchID,
+              //   // flightID: widget.flightID,
+              //   // departFlight: widget.departFlight,
+              //   // arriveFlight: widget.arriveFlight,
+              //   // departFromDate1: widget.departFromDate1,
+              //   // departFromTime1: widget.departFromTime1,
+              //   // departFromCode1: widget.departFromCode1,
+              //   // departFromDate2: widget.departFromDate2,
+              //   // departFromTime2: widget.departFromTime2,
+              //   // departFromCode2: widget.departFromCode2,
+              //   // arriveToDate1: widget.arriveToDate1,
+              //   // arriveToTime1: widget.arriveToTime1,
+              //   // arriveToCode1: widget.arriveToCode1,
+              //   // arriveToDate2: widget.arriveToDate2,
+              //   // arriveToCode2: widget.arriveToCode2,
+              //   // arriveToTime2: widget.arriveToTime2,
+              //   // paymentID: '',
+              //   // adultCount: widget.adultCount,
+              //   // childCount: widget.childCount,
+              //   // infantCount: widget.infantCount,
+              //   // //
+              //   // child1age: widget.child1age,
+              //   // child2age: widget.child2age,
+              //   // child3age: widget.child3age,
+              //   // child4age: widget.child4age,
+              //   // //
+              //   // infant1age: widget.infant1age,
+              //   // infant2age: widget.infant2age,
+              //   // infant3age: widget.infant3age,
+              //   // infant4age: widget.infant4age,
+              //   //
+              // ));
             },
               //child: Text('Select', style: TextStyle(color: Colors.white)),
             ),
