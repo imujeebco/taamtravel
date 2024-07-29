@@ -73,7 +73,7 @@ class OneWaySearchFlightScreen extends StatefulWidget {
 class _OneWaySearchFlightScreenState extends State<OneWaySearchFlightScreen> {
   final OneWayFlightQuoteController oneWayFlightQuoteController =
       Get.put(OneWayFlightQuoteController());
-  String? filterName = "a";
+  String? filterName = "";
   String selectedSortOption = '';
   List<String> airlineNames = [];
 

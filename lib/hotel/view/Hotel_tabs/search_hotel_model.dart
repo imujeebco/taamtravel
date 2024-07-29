@@ -5,7 +5,7 @@ class SearchHotelModel {
   String? destination;
   List<Hotels>? hotels;
 
-  SearchHotelModel({this.id, this.errorMessage, this.stackTrace, this.hotels});
+  SearchHotelModel({this.id, this.errorMessage, this.stackTrace, this.hotels,this.destination});
 
   SearchHotelModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -17,6 +17,17 @@ class SearchHotelModel {
         hotels!.add(new Hotels.fromJson(v));
       });
     }
+  }
+
+  // Clone method for SearchHotelModel class
+  SearchHotelModel clone() {
+    return SearchHotelModel(
+      id: id,
+      errorMessage: errorMessage,
+      stackTrace: stackTrace,
+      destination: destination,
+      hotels: [],
+    );
   }
 
   Map<String, dynamic> toJson() {

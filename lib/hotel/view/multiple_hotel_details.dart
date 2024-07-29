@@ -25,6 +25,7 @@ import '../../app/data/data_controller.dart';
 import '../../app/utils/custom_functions/app_alerts.dart';
 import '../model/booking_request.dart';
 import 'Hotel_tabs/search_hotel_model.dart';
+import 'multi_room_details.dart';
 
 // ignore: must_be_immutable
 class MultipleHotelDetailsScreen extends StatefulWidget {
@@ -35,6 +36,7 @@ class MultipleHotelDetailsScreen extends StatefulWidget {
   final List<BookingRequest> multiAccom;
 
   List<SearchHotelModel?> hotelsList = <SearchHotelModel?>[].obs;
+  List<SearchRoomModel?> selectedRoomsList = <SearchRoomModel?>[].obs;
 
 
   MultipleHotelDetailsScreen({super.key, required this.dataMap,required this.multiAccom,required this.hotelsList});
@@ -55,8 +57,7 @@ class _MultipleHotelDetailsScreenState extends State<MultipleHotelDetailsScreen>
       dataController.loadMyData();
       widget.hotelsList.forEach((elem) async {
         setState(() {});
-        var destination = widget.multiAccom.firstWhere((d) => d.destination == elem?.destination);
-
+        var destination = widget.multiAccom.firstWhere((d) => d.city == elem?.destination);
         searchHotelController.roomResponseList.add(await searchHotelController.fetchMultiRooms(destination, elem?.id.toString()  ?? '', elem?.hotels?[0].id.toString()  ?? ''));
         setState(() {});
       });
@@ -67,6 +68,43 @@ class _MultipleHotelDetailsScreenState extends State<MultipleHotelDetailsScreen>
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _onNextButtonPressed() {
+    // widget.selectedRoomsList = [];
+    //
+    // for (var rooms in searchHotelController.roomResponseList) {
+    //   rooms?.rooms?.forEach((e) {
+    //     if(e.selected ?? false){
+    //       print(e);
+    //       var ro = rooms.clone();
+    //       ro.rooms?.add(e);
+    //       widget.selectedRoomsList.add(ro);
+    //     }
+    //   });
+    // }
+
+    if (widget.selectedRoomsList.length == widget.multiAccom.length) {
+      // Proceed to the next screen or perform the desired action
+      print("All accommodations selected, proceeding to the next step.");
+
+      Get.to(() => MultiRoomDetailsScreen(
+
+        dataMap: widget.dataMap,
+        hotel: widget.hotelsList,
+        searchId: widget.selectedRoomsList[0]!.searchId.toString(),
+        room: widget.selectedRoomsList,
+        multiAccom: widget.multiAccom,
+      ));
+
+      // Get.to(() => MultipleHotelDetailsScreen(dataMap: widget.dataMap, hotelsList: widget.selectedresponseList,multiAccom: widget.multiAccom));
+    } else {
+      Get.showSnackbar(GetBar(
+        message: "Please select rooms for all destinations.",
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 
   @override
@@ -83,17 +121,19 @@ class _MultipleHotelDetailsScreenState extends State<MultipleHotelDetailsScreen>
             tabs: widget.hotelsList.map((tab) => Tab(text: tab?.destination)).toList(),
           ),
         ),
-        body: Padding(
+        body: searchHotelController.isLoading.value ? Center(
+          child: CircularProgressIndicator(),
+        ) : Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
               Obx(() {
-                if (searchHotelController.isLoading.value) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else {
-                  if (searchHotelController.roomResponseList.length > 0) {
+                // if (searchHotelController.isLoading.value) {
+                //   return Center(
+                //     child: CircularProgressIndicator(),
+                //   );
+                // } else {
+                  if (searchHotelController.roomResponseList.length == 0) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -114,10 +154,14 @@ class _MultipleHotelDetailsScreenState extends State<MultipleHotelDetailsScreen>
                     );
                   } else {
                     var data1 = widget.hotelsList;
+
                     return Expanded(
                       child: TabBarView(
                         //controller: tabController,
-                        children: widget.hotelsList.map((hotel) {
+                        children: widget.hotelsList.asMap().entries.map((entry) {
+                          int i = entry.key;
+                          var e = entry.value;
+
                           return ListView.builder(
                             physics: const BouncingScrollPhysics(),
                             itemCount: 1,
@@ -126,8 +170,8 @@ class _MultipleHotelDetailsScreenState extends State<MultipleHotelDetailsScreen>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  HotelPackageWidget(dataMap: widget.dataMap, hotel: hotel!.hotels![index],
-                                      rooms: searchHotelController.roomResponseList[index]?.rooms),
+                                  HotelPackageWidget(widget:widget ,dataMap: widget.dataMap, hotel: e!.hotels![0],
+                                    rooms: searchHotelController.roomResponseList[i]?.rooms, roomsList: searchHotelController.roomResponseList, destination: e.destination ?? '',),
                                 ],
                               );
                             },
@@ -136,8 +180,17 @@ class _MultipleHotelDetailsScreenState extends State<MultipleHotelDetailsScreen>
                       ),
                     );
                   }
-                }
+                //}
               }),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CustomButton(
+                  text: 'Next',
+                  onPress: (){
+                    _onNextButtonPressed();
+                  },
+                ),
+              ),
             ],
           ),
         ),
@@ -152,14 +205,19 @@ class _MultipleHotelDetailsScreenState extends State<MultipleHotelDetailsScreen>
 class HotelPackageWidget extends StatefulWidget {
   Map dataMap;
   Hotels hotel;
+  String destination;
   // String searchId;
   List<Rooms>? rooms;
+  List<SearchRoomModel?> roomsList;
+  MultipleHotelDetailsScreen widget;
 
   HotelPackageWidget({
     required this.dataMap,
     required this.hotel,
-    // required this.searchId,
+    required this.destination,
     required this.rooms,
+    required this.roomsList,
+    required this.widget,
 
     super.key,
   });
@@ -212,18 +270,23 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
 
     bool _isExpanded = false;
 
-    String jsonString = jsonEncode(widget.dataMap);
+    // String jsonString = jsonEncode(widget.dataMap);
+    // var bookingRequest;
+    // if (jsonString == '{}') {
+    //
+    // } else {
+    //   bookingRequest = BookingRequest.fromJson(json.decode(jsonString));
+    //   // Calculate total adults and total children and infants
+    //
+    //   // Check if rooms is not null before iterating
+    //   if (bookingRequest.rooms != null) {
+    //     for (Room room in bookingRequest.rooms!) {
+    //       // widget.totalAdults += room.adults;
+    //       // widget.totalChildrenAndInfant += room.childrenAndInfant;
+    //     }
+    //   }
+    // }
 
-    var bookingRequest = BookingRequest.fromJson(json.decode(jsonString));
-    // Calculate total adults and total children and infants
-
-    // Check if rooms is not null before iterating
-    if (bookingRequest.rooms != null) {
-      for (Room room in bookingRequest.rooms!) {
-        // widget.totalAdults += room.adults;
-        // widget.totalChildrenAndInfant += room.childrenAndInfant;
-      }
-    }
 
     return Container(
       padding: EdgeInsets.fromLTRB(10.0, 10, 10, 10),
@@ -237,7 +300,7 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
           // 0.01.ph,
 
           CommonText(
-            text: '${bookingRequest.destination}',
+            text: '${widget.destination}',
             weight: FontWeight.bold,
             fontSize: 12.0,
             color: AppColors.appColorPrimary,
@@ -300,33 +363,33 @@ class _HotelPackageWidgetState extends State<HotelPackageWidget> {
           ),
           0.02.ph,
 
-          // -----------------------------------------------------
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(),
-                    borderRadius: BorderRadius.circular(3.0),
-                  ),
-                  child: Icon(Icons.share_outlined,
-                      color: Colors.black, size: 20)),
-              0.02.pw,
-              Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(),
-                    borderRadius: BorderRadius.circular(3.0),
-                  ),
-                  child: Icon(Icons.favorite_border,
-                      color: Colors.black, size: 20)),
-            ],
-          ),
-
-          0.02.ph,
+          // // -----------------------------------------------------
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.end,
+          //   children: [
+          //     Container(
+          //         height: 40,
+          //         width: 40,
+          //         decoration: BoxDecoration(
+          //           border: Border.all(),
+          //           borderRadius: BorderRadius.circular(3.0),
+          //         ),
+          //         child: Icon(Icons.share_outlined,
+          //             color: Colors.black, size: 20)),
+          //     0.02.pw,
+          //     Container(
+          //         height: 40,
+          //         width: 40,
+          //         decoration: BoxDecoration(
+          //           border: Border.all(),
+          //           borderRadius: BorderRadius.circular(3.0),
+          //         ),
+          //         child: Icon(Icons.favorite_border,
+          //             color: Colors.black, size: 20)),
+          //   ],
+          // ),
+          //
+          // 0.02.ph,
 // -----------------------------------------------------
           // -----------------------------------------------------
           ClipRRect(
@@ -729,16 +792,23 @@ class RoomsWidget extends StatelessWidget {
 //   }
 // }
 
-class RoomOption extends StatelessWidget {
+class RoomOption extends StatefulWidget {
   final String roomType;
   final List<RoomDetail> roomDetails;
-  HotelPackageWidget widget;
-  Rooms? room;
+  final HotelPackageWidget widget;
+  final Rooms? room;
 
   RoomOption(
       {required this.roomType,
-      required this.roomDetails,
-      required this.widget, required this.room});
+        required this.roomDetails,
+        required this.widget, required this.room});
+
+  @override
+  _RoomOptionState createState() => _RoomOptionState();
+}
+
+class _RoomOptionState extends State<RoomOption> {
+  RoomDetail? selectedRoom;
 
   @override
   Widget build(BuildContext context) {
@@ -756,7 +826,7 @@ class RoomOption extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    roomType,
+                    widget.roomType,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -764,16 +834,36 @@ class RoomOption extends StatelessWidget {
               ],
             ),
             SizedBox(height: 8),
-            ...roomDetails.map((detail) => Column(
-                  children: [
-                    Divider(),
-                    RoomDetailWidget(
-                      room: room,
-                      detail: detail,
-                      widget: widget,
-                    ),
-                  ],
-                )),
+            ...widget.roomDetails.map((detail) => Column(
+              children: [
+                Divider(),
+                RoomDetailWidget(
+                  room: widget.room,
+                  detail: detail,
+                  widget: widget.widget,
+                  isSelected: selectedRoom == detail,
+                  onSelect: () {
+                    setState(() {
+                      if (selectedRoom == detail) {
+                        selectedRoom = null; // Deselect the room if it is already selected
+                      } else {
+                        widget.widget.roomsList.forEach((element) {
+                          element?.rooms?.forEach((e) {
+                            if(e.roomId == widget.room?.roomId){
+                              var roo = element.clone();
+                              roo.rooms?.add(e);
+                              widget.widget.widget.selectedRoomsList.add(roo);
+                              e.selected = true;
+                            }
+                          });
+                        });
+                        selectedRoom = detail; // Select the new room
+                      }
+                    });
+                  },
+                ),
+              ],
+            )),
           ],
         ),
       ),
@@ -794,37 +884,38 @@ class RoomDetail extends StatelessWidget {
   }
 }
 
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(title: Text('Room Selection')),
-//         body:
-//       ),
-//     );
-//   }
-// }
-
-class RoomDetailWidget extends StatelessWidget {
+class RoomDetailWidget extends StatefulWidget {
   final RoomDetail detail;
   final HotelPackageWidget widget;
-  Rooms? room;
+  final Rooms? room;
+  final bool isSelected;
+  final VoidCallback onSelect;
 
-  RoomDetailWidget({required this.detail, required this.widget, required this.room});
+  RoomDetailWidget({
+    required this.detail,
+    required this.widget,
+    required this.room,
+    required this.isSelected,
+    required this.onSelect,
+  });
 
+  @override
+  _RoomDetailWidgetState createState() => _RoomDetailWidgetState();
+}
+
+class _RoomDetailWidgetState extends State<RoomDetailWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          detail.title,
+          widget.detail.title,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 20),
         SizedBox(
-          height: 30.0, // Set the desired height here
+          height: 30.0,
           child: OutlinedButton(
             onPressed: () {},
             child: Row(
@@ -841,59 +932,15 @@ class RoomDetailWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(
-              detail.price,
+              widget.detail.price,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(width: 10),
             CustomButton(
               height: 35,
-              width: w/3,
-              text: 'Select',
-              onPress: () {
-              // Get.to(() => RoomDetailsScreen(
-              //   dataMap: widget.dataMap,
-              //   hotel: widget.hotel,
-              //   searchId: widget.searchId,
-              //   room: room!,
-              //   // fare: widget.charges.toStringAsFixed(2),
-              //   // tax: widget.tax.toStringAsFixed(2),
-              //   // total: "45",
-              //   // traveller: widget.traveller,
-              //   // cabinClass: widget.cabinClass,
-              //   // searchID: widget.searchID,
-              //   // flightID: widget.flightID,
-              //   // departFlight: widget.departFlight,
-              //   // arriveFlight: widget.arriveFlight,
-              //   // departFromDate1: widget.departFromDate1,
-              //   // departFromTime1: widget.departFromTime1,
-              //   // departFromCode1: widget.departFromCode1,
-              //   // departFromDate2: widget.departFromDate2,
-              //   // departFromTime2: widget.departFromTime2,
-              //   // departFromCode2: widget.departFromCode2,
-              //   // arriveToDate1: widget.arriveToDate1,
-              //   // arriveToTime1: widget.arriveToTime1,
-              //   // arriveToCode1: widget.arriveToCode1,
-              //   // arriveToDate2: widget.arriveToDate2,
-              //   // arriveToCode2: widget.arriveToCode2,
-              //   // arriveToTime2: widget.arriveToTime2,
-              //   // paymentID: '',
-              //   // adultCount: widget.adultCount,
-              //   // childCount: widget.childCount,
-              //   // infantCount: widget.infantCount,
-              //   // //
-              //   // child1age: widget.child1age,
-              //   // child2age: widget.child2age,
-              //   // child3age: widget.child3age,
-              //   // child4age: widget.child4age,
-              //   // //
-              //   // infant1age: widget.infant1age,
-              //   // infant2age: widget.infant2age,
-              //   // infant3age: widget.infant3age,
-              //   // infant4age: widget.infant4age,
-              //   //
-              // ));
-            },
-              //child: Text('Select', style: TextStyle(color: Colors.white)),
+              width: MediaQuery.of(context).size.width / 3,
+              text: widget.isSelected ? 'Selected' : 'Select',
+              onPress: widget.onSelect,
             ),
           ],
         ),

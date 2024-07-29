@@ -53,7 +53,7 @@ class _AgentRegisterScreenState extends State<AgentRegisterScreen> {
                   BlendMode.srcATop,
                 ),
                 child: Image(
-                    image: AssetImage("assets/images/onboard_background.png"),
+                    image: AssetImage("assets/icons/logo.png"),
                     fit: BoxFit.cover),
               ),
             ),

@@ -35,7 +35,7 @@ class PaymentMethodController extends GetxController {
 
       var response = await http.get(
         Uri.parse(
-            '${baseURL}api/FlightBooking/paymentOptions/microSiteClientId/2'),
+            '${baseURL}api/FlightBooking/paymentOptions/microSiteClientId/3'),
         headers: headers,
       );
       print("This is my Token: ${dataController.myToken.value}");

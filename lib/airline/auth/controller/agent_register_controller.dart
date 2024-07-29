@@ -30,7 +30,7 @@ class AgentRegisterController extends GetxController {
         "password": password,
         "email": email,
         "agentCode": code,
-        "microSiteClientId": 2
+        "microSiteClientId": 3
       });
 
       var response = await http.post(

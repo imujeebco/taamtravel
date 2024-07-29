@@ -131,7 +131,7 @@ class _MulticityFlightScreenState extends State<MulticityFlightScreen> {
           'IsFlexibleDates': true,
           'IsDirectFlight': false,
           'TripType': tripType.toString(),
-          'MicrositeClientId': 2,
+          'MicrositeClientId': 3,
         });
         itm.remove('to');
         itm.remove('from');

@@ -34,7 +34,7 @@ class VerifyOtpController extends GetxController {
       var body = json.encode({
         "mobileNo": phoneNumber,
         "mobileCode": phoneCode,
-        "microSiteClientId": 2,
+        "microSiteClientId": 3,
         "code": otp
       });
       var response = await http.post(

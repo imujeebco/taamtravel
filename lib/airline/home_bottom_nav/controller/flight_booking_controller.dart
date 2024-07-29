@@ -357,7 +357,7 @@ class FlightBookingController extends GetxController {
           {"flightId": myflightID, "searchId": mySearchID}
         ],
         "paymentTypeId": mypaymentID,
-        "microSiteClientId": 2,
+        "microSiteClientId": 3,
         "passengers": passengers
         // [
         //   {

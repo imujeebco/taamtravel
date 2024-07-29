@@ -78,7 +78,7 @@ class MulticitySearchFlightScreen extends StatefulWidget {
 
 class _MulticitySearchFlightScreenState extends State<MulticitySearchFlightScreen> {
   final MulticityFlightQuoteController multiCityFlightQuoteController = Get.put(MulticityFlightQuoteController());
-  String? filterName = "a";
+  String? filterName = "";
   String selectedSortOption = '';
   List<String> airlineNames = [];
   bool? hasFlight = true;

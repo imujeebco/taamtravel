@@ -34,7 +34,7 @@ class OtpController extends GetxController {
       var body = json.encode({
         "mobileNo": phoneNumber2,
         "mobileCode": phoneCode2,
-        "microSiteClientId": 2
+        "microSiteClientId": 3
       });
       var response = await http.post(
         Uri.parse('${baseURL}api/Accounts/register/generateOtp'),

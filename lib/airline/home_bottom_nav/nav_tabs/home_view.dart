@@ -66,7 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CommonText(
-                    text: 'Join Silicon Reservation System and enjoy benefits'),
+                  text: 'Hi, ${dataController.myName.value == 'Error' ? 'Traveler' : dataController.myName.value}',
+                  fontSize: 20.0,
+                  weight: FontWeight.bold,
+                ),
                 Container(
                   margin: const EdgeInsets.only(top: 10.0),
                   width: w,
@@ -75,22 +78,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // 1st -------------
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const CommonText(text: 'FEATURED FARES FOR YOU'),
-                          TextButton(
-                              onPressed: () {
-                                MyToast.snackToast("Coming Soon", 1);
-                              },
-                              child: const CommonText(
-                                text: 'See All',
-                                weight: AppFontWeights.appTextFontWeightBold,
-                                color: AppColors.appColorPrimary,
-                              )),
-                        ],
-                      ),
-                      0.04.ph,
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     const CommonText(text: 'FEATURED FARES FOR YOU'),
+                      //     TextButton(
+                      //         onPressed: () {
+                      //           MyToast.snackToast("Coming Soon", 1);
+                      //         },
+                      //         child: const CommonText(
+                      //           text: 'See All',
+                      //           weight: AppFontWeights.appTextFontWeightBold,
+                      //           color: AppColors.appColorPrimary,
+                      //         )),
+                      //   ],
+                      // ),
+                      0.02.ph,
                       // 2nd ----------------------
 
                       CommonText(
@@ -225,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 30.0),
-                          padding: const EdgeInsets.fromLTRB(30.0, 30, 20, 20),
+                          padding: const EdgeInsets.fromLTRB(10.0, 30, 20, 20),
                           // height: h * 0.22,
                           // width: w * 0.84,
                           decoration: BoxDecoration(
@@ -239,13 +242,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               // 0.03.pw,
                               Expanded(
                                 flex: 2,
-                                child: Text(
-                                  'ICON',
-                                  style: GoogleFonts.bebasNeue(
-                                      color: Colors.white, fontSize: 32.0),
+                                child: Image(
+                                  image: AssetImage("assets/icons/logo.png"),
+                                  fit: BoxFit.contain,
                                 ),
                               ),
-                              // 0.03.pw,
+                              0.03.pw,
                               Expanded(
                                 flex: 5,
                                 child: Column(
@@ -255,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     0.01.ph,
                                     CommonText(
                                       text:
-                                          'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.',
+                                          'Save 10% or more on over 100,000 hotels with Member Prices. Also, members save up to 30% when you add a hotel to a flight.',
                                       color: Colors.white,
                                       fontSize: 11.0,
                                       textAlign: TextAlign.justify,

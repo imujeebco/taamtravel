@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:travel_app/airline/home_bottom_nav/nav_tabs/home_view.dart';
 import 'package:travel_app/app/configs/app_colors.dart';
 import 'package:travel_app/app/configs/app_size_config.dart';
 import 'package:travel_app/app/utils/custom_widgets/common_text.dart';
@@ -40,6 +41,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   setArgs() {
     // print("Cabin Class: ${widget.cabinClass}");
     tabsList = [
+      HomeScreen(),
       HotelScreen(cabinClass: widget.cabinClass),
       SearchScreen(cabinClass: widget.cabinClass),
       const BookingScreen(),
@@ -58,6 +60,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   onSelectTab(int index) => setState(() => selectedIndex = index);
 
   var tabsLables = [
+    'Home',
     'Hotel Search',
     'Flight Search',
     'My Bookings',
@@ -67,6 +70,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   ];
   var tabsIcons = <Widget>[
     const Icon(Icons.home),
+    const Icon(Icons.location_city),
     const Icon(Icons.airplanemode_active_rounded),
     const Icon(Icons.airplane_ticket_rounded),
     const Icon(Icons.hotel_rounded),
@@ -76,6 +80,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 
   List<Map<String, dynamic>> appDrawerData = [
     {'Icon': Icons.home, 'Name': 'Home'},
+    {'Icon': Icons.location_city, 'Name': 'Hotel'},
     {'Icon': Icons.local_airport_rounded, 'Name': 'Book a flight'},
     {'Icon': Icons.today_rounded, 'Name': 'My Bookings'},
     {'Icon': Icons.today_rounded, 'Name': 'My Hotel Bookings'},

@@ -326,7 +326,7 @@ class WaafiBookingHotelController extends GetxController {
         "paymentParams":
         {"phoneNumber": removeAllWhitespace(phoneNum)}
         ,
-        "microSiteClientId": 2,
+        "microSiteClientId": 3,
         "passengers": passengers
         // [
         //   {

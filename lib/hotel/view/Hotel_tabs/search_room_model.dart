@@ -16,6 +16,15 @@ class SearchRoomModel {
     }
   }
 
+  // Clone method for SearchHotelModel class
+  SearchRoomModel clone() {
+    return SearchRoomModel(
+      hotelId: hotelId,
+      searchId: searchId,
+      rooms: [],
+    );
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['hotelId'] = this.hotelId;
@@ -38,6 +47,7 @@ class Rooms {
   dynamic cancellationTill;
   dynamic cancellationPenalty;
   String? remarks;
+  bool? selected = false;
 
   Rooms(
       {this.roomId,

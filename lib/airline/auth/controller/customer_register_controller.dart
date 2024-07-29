@@ -37,7 +37,7 @@ class CustomerRegisterController extends GetxController {
         "email": "zaryabalam97@gmail.comm",
         "mobileNo": "+92",
         "mobileCode": "3112136873",
-        "microSiteClientId": 2
+        "microSiteClientId": 3
       });
 
       var response = await http.post(

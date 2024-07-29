@@ -30,7 +30,7 @@ class SearchHotelScreen extends StatefulWidget {
 class _SearchHotelScreenState extends State<SearchHotelScreen> {
   final SearchHotelController searchHotelController =
       Get.put(SearchHotelController());
-  String? filterName = "a";
+  String? filterName = "";
   List<String> airlineNames = [];
   int? _selectedOutbound;
   int? _selectedInbound;

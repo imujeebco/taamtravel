@@ -461,6 +461,7 @@ class _AccommodationTabViewState extends State<MultipleAccommodationTabView> {
                             r.checkIn = elem.checkInDate;
                             r.checkOut = elem.checkOutDate;
                             r.destination = elem.toCode;
+                            r.city = elem.toCity;
                             r.rooms = [];
                             roomList.forEach((room) async {
                               Room roo = Room(adults: room['Adults'], childrenAndInfant: room['ChildrenAndInfant'], childrenAndInfantAges: []);

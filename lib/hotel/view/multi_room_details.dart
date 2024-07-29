@@ -1,7 +1,4 @@
 // ignore_for_file: must_be_immutable, non_constant_identifier_names
-
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +8,7 @@ import 'package:travel_app/airline/home_bottom_nav/views/passenger_details.dart'
 import 'package:travel_app/hotel/view/passenger_details_hotel.dart';
 import 'package:travel_app/app/configs/app_size_config.dart';
 import 'package:travel_app/app/utils/custom_widgets/custom_appbar.dart';
+import 'package:travel_app/hotel/view/passenger_details_multi_hotel.dart';
 import '../../airline/auth/view/login_screen.dart';
 import '../../app/data/data_controller.dart';
 import '../../app/utils/custom_functions/app_alerts.dart';
@@ -18,28 +16,30 @@ import '../model/booking_request.dart';
 import 'Hotel_tabs/search_hotel_model.dart';
 import 'Hotel_tabs/search_room_model.dart';
 
-class RoomDetailsScreen extends StatefulWidget {
+class MultiRoomDetailsScreen extends StatefulWidget {
   Map dataMap;
-  Hotels hotel;
+  List<SearchHotelModel?> hotel;
   String searchId;
-  Rooms room;
+  List<SearchRoomModel?> room;
+  final List<BookingRequest> multiAccom;
 
   int totalAdults = 0;
   int totalChildrenAndInfant = 0;
 
-  RoomDetailsScreen({
+  MultiRoomDetailsScreen({
     super.key,
     required this.dataMap,
     required this.hotel,
     required this.searchId,
-    required this.room
+    required this.room,
+    required this.multiAccom
   });
 
   @override
-  State<RoomDetailsScreen> createState() => _RoomDetailsScreenState();
+  State<MultiRoomDetailsScreen> createState() => _MultiRoomDetailsScreenState();
 }
 
-class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
+class _MultiRoomDetailsScreenState extends State<MultiRoomDetailsScreen> {
   final DataController dataController = Get.put(DataController());
   String? requestedAge = "";
   String phoneNumber = '';
@@ -53,9 +53,9 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    String jsonString = jsonEncode(widget.dataMap);
+    // String jsonString = jsonEncode(widget.dataMap);
 
-    bookingRequest = BookingRequest.fromJson(json.decode(jsonString));
+    bookingRequest = widget.multiAccom[0]; //BookingRequest.fromJson(json.decode(jsonString));
     // Calculate total adults and total children and infants
 
     // Check if rooms is not null before iterating
@@ -65,8 +65,6 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
         widget.totalChildrenAndInfant += room.childrenAndInfant;
       }
     }
-
-
     // print('Total Adults: ${}widget.totalAdults');
     // print('Total Children and Infants: $totalChildrenAndInfant');
 
@@ -100,12 +98,28 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                   Text('${widget.totalAdults} Adults ${widget.totalChildrenAndInfant > 0 ? '+ ${widget.totalChildrenAndInfant}'  : '' }'),
                 ],
               ),
-              Row(
-                children: [
-                  Icon(Icons.calendar_today),
-                  SizedBox(width: 8),
-                  Text('${_formatDate(bookingRequest.checkIn ?? '')} - ${_formatDate(bookingRequest.checkOut ?? '')}'),
-                ],
+              Column(
+                children: widget.multiAccom.map((e) =>
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.pin_drop),
+                            SizedBox(width: 8),
+                            Text(e.city ?? ''),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.calendar_today),
+                            SizedBox(width: 8),
+                            Text('${_formatDate(e.checkIn ?? '')} - ${_formatDate(e.checkOut ?? '')}'),
+                          ],
+                        )
+                      ],
+                    ),
+                ).toList(),
               ),
               SizedBox(height: 8),
               TextButton(
@@ -116,86 +130,144 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                 child: Text('Change your trip'),
               ),
               SizedBox(height: 16),
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.hotel.hotelName ?? '',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+        Column(
+          children: widget.hotel.asMap().entries.map((entry) {
+            int index = entry.key;
+            var e = entry.value;
+
+            return Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.pin_drop),
+                          SizedBox(width: 8),
+                          Text(widget.multiAccom[index].city ?? ''),
+                        ],
                       ),
-                    ),
-                    Row(
-                      children: [
-                        if (widget.hotel.category == 'S1') ...[
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                      Text(
+                        e?.hotels?[0].hotelName ?? '',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          if (e?.hotels?[0].category == 'S1') ...[
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                          ],
+                          if (e?.hotels?[0].category == 'S2') ...[
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                          ],
+                          if (e?.hotels?[0].category == 'S3') ...[
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                          ],
+                          if (e?.hotels?[0].category == 'S4') ...[
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                          ],
+                          if (e?.hotels?[0].category == 'S5') ...[
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                            Icon(Icons.star,
+                                color: Color.fromRGBO(236, 171, 71, 1)),
+                          ],
                         ],
-                        if (widget.hotel.category == 'S2') ...[
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
+                      ),
+                      SizedBox(height: 8),
+                      Column(
+                          children: widget.room[index]!.rooms!.map((r) =>
+                              Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.bed),
+                                      SizedBox(width: 8),
+                                      Text(r.roomDescription ?? ''),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.restaurant),
+                                      SizedBox(width: 8),
+                                      Text(r.mealPlan ?? ''),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                          ).toList()),
+
+                      SizedBox(height: 8),
+                      ReadMoreText(
+                        e?.hotels?[0].description ?? '',
+                        trimMode: TrimMode.Line,
+                        trimLines: 4,
+                        colorClickableText: Colors.pink,
+                        trimCollapsedText: 'Read more',
+                        trimExpandedText: 'Read less',
+                        moreStyle: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                        lessStyle: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Text(
+                             'Price: ',
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                              '${widget.room[index]!.rooms![0].currency} ${widget.room[index]!.rooms![0].totalAmount.toString()}'
+                          ),
                         ],
-                        if (widget.hotel.category == 'S3') ...[
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                        ],
-                        if (widget.hotel.category == 'S4') ...[
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                        ],
-                        if (widget.hotel.category == 'S5') ...[
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                          Icon(Icons.star, color: Color.fromRGBO(236, 171, 71, 1)),
-                        ],
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.bed),
-                        SizedBox(width: 8),
-                        Text(widget.room.roomDescription ?? ''),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.restaurant),
-                        SizedBox(width: 8),
-                        Text(widget.room.mealPlan ?? ''),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    ReadMoreText(
-                      widget.hotel.description ?? '',
-                      trimMode: TrimMode.Line,
-                      trimLines: 4,
-                      colorClickableText: Colors.pink,
-                      trimCollapsedText: 'Read more',
-                      trimExpandedText: 'Read less',
-                      moreStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                      lessStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                SizedBox(height: 16),
+              ],
+            );
+          }).toList(),
+        ),
+
               SizedBox(height: 16),
-              ConfirmTripCard(searchID: widget.searchId,
-                hotelID: widget.hotel.id.toString(),
-                roomID: widget.room.roomId.toString(),
+              ConfirmTripCard(
+                multiAccom: widget.multiAccom,
+                rooms: widget.room,
                 checkIn: bookingRequest.checkIn ?? '',
-                total:(widget.room.currency ?? '') + ' ' + (widget.room.totalAmount?.toString() ?? ''),
                 checkOut: bookingRequest.checkIn ?? '',
                 destination: bookingRequest.destination ?? '',
                 adultCount: widget.totalAdults,
@@ -219,18 +291,17 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
 }
 
 class ConfirmTripCard extends StatelessWidget {
-  String searchID;
-  String hotelID;
-  String roomID;
+  List<SearchRoomModel?> rooms;
+  List<BookingRequest> multiAccom;
   //
   String checkIn;
   String checkOut;
   String destination;
+  double total = 0.0;
   //
   int? adultCount;
   int? childCount;
   int? infantCount;
-  String total;
   //
   int? child1age;
   int? child2age;
@@ -245,9 +316,8 @@ class ConfirmTripCard extends StatelessWidget {
 
   ConfirmTripCard({
     super.key,
-    required this.searchID,
-    required this.hotelID,
-    required this.roomID,
+    required this.rooms,
+    required this.multiAccom,
     //
     required this.checkIn,
     required this.checkOut,
@@ -256,7 +326,6 @@ class ConfirmTripCard extends StatelessWidget {
     required this.adultCount,
     required this.childCount,
     required this.infantCount,
-    required this.total,
     //
     required this.child1age,
     required this.child2age,
@@ -278,6 +347,12 @@ class ConfirmTripCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final DataController dataController = Get.put(DataController());
 
+    rooms.forEach((element) {
+      element?.rooms?.forEach((e) {
+        var tot = e.totalAmount.toString();
+        total += double.parse(tot);
+      });
+    });
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -328,7 +403,7 @@ class ConfirmTripCard extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    total ?? '',
+                    total.toString(),
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -354,17 +429,15 @@ class ConfirmTripCard extends StatelessWidget {
               onPressed: () {
                 dataController.myLoggedIn.value
                     ?
-                Get.to(() => PassengerDetailsHotelScreen(
-                  searchID: searchID,
-                  hotelID: hotelID,
-                  roomID: roomID,
+                Get.to(() => PassengerDetailsMultiHotelScreen(
+                  multiAccom: multiAccom,
                   checkIn: checkIn,
                   checkOut: checkOut,
                   destination: destination,
                   adultCount: adultCount,
                   childCount: childCount,
                   infantCount: infantCount,
-                  total: total ?? '',
+                  total: total.toString(),
                   child1age: child1age,
                   child2age: child2age,
                   child3age: child3age,
@@ -373,6 +446,7 @@ class ConfirmTripCard extends StatelessWidget {
                   infant2age: infant2age,
                   infant3age: infant3age,
                   infant4age: infant4age,
+                  rooms:rooms,
                   //
                 ))
                     : Dialogs.showCustomAlertDialog(context,

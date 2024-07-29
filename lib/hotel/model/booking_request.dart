@@ -3,12 +3,14 @@ class BookingRequest {
   String? checkOut;
   List<Room>? rooms;
   String? destination;
+  String? city;
 
   BookingRequest({
     this.checkIn,
     this.checkOut,
     this.rooms,
     this.destination,
+    this.city,
   });
 
   factory BookingRequest.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class BookingRequest {
       checkOut: json['checkOut'],
       rooms: List<Room>.from(json['Rooms'].map((x) => Room.fromJson(x))),
       destination: json['destination'],
+      city: json['city'],
     );
   }
 
@@ -26,6 +29,7 @@ class BookingRequest {
       'checkOut': checkOut,
       'Rooms': rooms?.map((x) => x.toJson()).toList(),
       'destination': destination,
+      'city': city,
     };
   }
 }

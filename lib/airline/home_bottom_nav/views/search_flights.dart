@@ -73,7 +73,7 @@ class SearchFlightScreen extends StatefulWidget {
 class _SearchFlightScreenState extends State<SearchFlightScreen> {
   final FlightQuoteController flightQuoteController =
       Get.put(FlightQuoteController());
-  String? filterName = "a";
+  String? filterName = "";
   List<String> airlineNames = [];
   int? _selectedOutbound;
   int? _selectedInbound;

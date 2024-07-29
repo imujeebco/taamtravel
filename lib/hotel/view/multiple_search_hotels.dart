@@ -25,7 +25,7 @@ class MultipleSearchHotelScreen extends StatefulWidget {
   Map dataMap;
   final List<BookingRequest> multiAccom;
 
-  List<SearchHotelModel?> responseList = <SearchHotelModel?>[].obs;
+  // List<SearchHotelModel?> responseList = <SearchHotelModel?>[].obs;
   List<SearchHotelModel?> selectedresponseList = <SearchHotelModel?>[].obs;
 
   MultipleSearchHotelScreen({super.key, required this.dataMap, required this.multiAccom});
@@ -37,7 +37,7 @@ class MultipleSearchHotelScreen extends StatefulWidget {
 class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> with TickerProviderStateMixin {
   final SearchHotelController searchHotelController =
   Get.put(SearchHotelController());
-  String? filterName = "a";
+  String? filterName = "";
   List<String> airlineNames = [];
   int? _selectedOutbound;
   int? _selectedInbound;
@@ -54,7 +54,7 @@ class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> w
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       widget.multiAccom.forEach((elem) async {
         setState(() {});
-        searchHotelController.responseList.add(await searchHotelController.MultifetchHotels(elem,elem.destination));
+        searchHotelController.responseList.add(await searchHotelController.MultifetchHotels(elem,elem.city));
         setState(() {});
       });
     });
@@ -67,13 +67,17 @@ class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> w
 
   void _onNextButtonPressed() {
     List<Hotels> selectedHotels = [];
+    widget.selectedresponseList = [];
 
     for (var destination in searchHotelController.responseList) {
       if (destination != null && destination.hotels != null) {
         for (var hotel in destination.hotels!) {
           if (hotel.selected == true) {
             selectedHotels.add(hotel);
-            widget.selectedresponseList.add(destination);
+            var desti = destination.clone();
+            desti.hotels?.clear();
+            desti.hotels?.add(hotel);
+            widget.selectedresponseList.add(desti);
           }
         }
       }
@@ -83,7 +87,7 @@ class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> w
       // Proceed to the next screen or perform the desired action
       print("All accommodations selected, proceeding to the next step.");
 
-      //Get.to(() => MultipleHotelDetailsScreen(dataMap: widget.dataMap, hotelsList: widget.selectedresponseList,multiAccom: widget.multiAccom));
+      Get.to(() => MultipleHotelDetailsScreen(dataMap: widget.dataMap, hotelsList: widget.selectedresponseList,multiAccom: widget.multiAccom));
     } else {
       Get.showSnackbar(GetBar(
         message: "Please select accommodations for all destinations.",
@@ -106,7 +110,7 @@ class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> w
           bottom: TabBar(
             controller: tabController,
             isScrollable: true,
-            tabs: widget.multiAccom.map((tab) => Tab(text: tab.destination)).toList(),
+            tabs: widget.multiAccom.map((tab) => Tab(text: tab.city)).toList(),
           ),
         ),
         body: Obx(() {
@@ -116,7 +120,7 @@ class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> w
             return TabBarView(
               controller: tabController,
               children: widget.multiAccom.map((tab) {
-                var destination = searchHotelController.responseList.firstWhere((d) => d?.destination == tab.destination, orElse: () => null);
+                var destination = searchHotelController.responseList.firstWhere((d) => d?.destination == tab.city, orElse: () => null);
 
                 if (destination == null || destination.hotels == null) {
                   return Center(

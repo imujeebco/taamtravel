@@ -55,7 +55,7 @@ class FlightQuoteController extends GetxController {
         "IsFlexibleDates": true,
         "IsDirectFlight": false,
         "TripType": tripType,
-        "MicrositeClientId": 2
+        "MicrositeClientId": 3
         // dataController.mySupportId.value
       });
       print(departCity);
