@@ -10,6 +10,7 @@ import 'package:travel_app/airline/home_bottom_nav/nav_tabs/components/search_ta
 import 'package:travel_app/airline/home_bottom_nav/nav_tabs/components/search_tabs/return_tab.dart';
 
 import '../controller/search_controller.dart';
+import '../model/search_model.dart';
 import 'components/search_tabs/multi_tab.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -44,6 +45,19 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  // Function to group airports by country
+  Map<String, List<Airport>> groupAirportsByCountry(List<Airport> airports) {
+    Map<String, List<Airport>> groupedAirports = {};
+    for (var airport in airports) {
+      if (groupedAirports.containsKey(airport.country)) {
+        groupedAirports[airport.country]!.add(airport);
+      } else {
+        groupedAirports[airport.country] = [airport];
+      }
+    }
+    return groupedAirports;
   }
 
   @override
@@ -99,43 +113,64 @@ class _SearchScreenState extends State<SearchScreen> {
 
                 // SizedBox(height: 16),
 
-                Obx(
+            Obx(
                   () {
-                    // ignore: unrelated_type_equality_checks
-                    return searchController.mySearch1 == ""
-                        ? Container()
-                        : Container(
-                            height: 250,
-                            margin: EdgeInsets.only(left: 20),
-                            decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(15)),
-                            child: searchController.searchModel.value.airports != null && searchController.searchModel.value.airports!.isNotEmpty
-                                ? ListView.builder(
-                                    itemCount: searchController.searchModel.value.airports!.length,
-                                    itemBuilder: (context, index) {
-                                      final airport = searchController.searchModel.value.airports![index];
-                                      return ListTile(
-                                        onTap: () {
-                                          setState(() {
-                                            fromController.text = "${airport.code},${airport.city}";
-                                            fromCode = airport.code.toString();
-                                            fromCity = airport.city.toString();
-                                            fromCountry = airport.country.toString();
-                                            searchController.fetchSearch1("");
-                                          });
-                                        },
-                                        title: Text(airport.name),
-                                        subtitle: Text(airport.city),
-                                      );
-                                    },
-                                  )
-                                : Center(
-                                    child: Text("No airports found"),
-                                  ),
-                          );
-                  },
-                ),
+                if (searchController.mySearch1.isEmpty) {
+                  return Container();
+                } else {
+                  // Assuming `searchController.searchModel.value.airports` is already populated
+                  List<Airport> airports = searchController.searchModel.value.airports ?? [];
 
-                // To Field ------------------------
+                  // Group airports by country
+                  Map<String, List<Airport>> groupedAirports = groupAirportsByCountry(airports);
+
+                  List<Widget> listItems = [];
+
+                  // Add grouped airports to the list
+                  groupedAirports.forEach((country, airports) {
+                    listItems.add(
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10,left: 10),
+                        child: Text(
+                          country,
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    );
+
+                    for (var airport in airports) {
+                      listItems.add(
+                        ListTile(
+                          onTap: () {
+                            fromController.text = "${airport.code}, ${airport.city}";
+                            fromCode = airport.code;
+                            fromCity = airport.city;
+                            fromCountry = airport.country;
+                            searchController.fetchSearch1(""); // Clear search
+                          },
+                          title: Text(airport.name),
+                          subtitle: Text(airport.city),
+                        ),
+                      );
+                    }
+                  });
+
+                  return Container(
+                    height: 250,
+                    margin: EdgeInsets.only(left: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ListView(
+                      children: listItems,
+                    ),
+                  );
+                }
+              },
+            ),
+
+            // To Field ------------------------
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [

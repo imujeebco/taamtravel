@@ -1,9 +1,13 @@
 // ignore_for_file: camel_case_types
 
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:travel_app/app/configs/app_colors.dart';
 import 'package:travel_app/app/configs/app_size_config.dart';
 import 'package:travel_app/app/utils/custom_widgets/common_text.dart';
@@ -43,7 +47,10 @@ class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> w
   int? _selectedInbound;
   String? selection;
   late TabController tabController;
-
+  BookingRequest bRequest = BookingRequest();
+  DatePickerController _dpcontroller = DatePickerController();
+  late AnimationController controller;
+  double _progress = 0.0;
   // int? selectedCardIndex;
 
   @override
@@ -51,11 +58,40 @@ class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> w
     super.initState();
     tabController = TabController(length: widget.multiAccom.length, vsync: this);
 
+    controller = AnimationController(vsync: this);
+
+    // String jsonString = jsonEncode(widget.dataMap);
+
+    bRequest = widget.multiAccom[0];
+
+    fetch();
+
+  }
+
+  void fetch(){
+    _progress = 0.0;
+    _startProgress();
+    searchHotelController.responseList.clear();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       widget.multiAccom.forEach((elem) async {
         setState(() {});
         searchHotelController.responseList.add(await searchHotelController.MultifetchHotels(elem,elem.city));
+        if (widget.multiAccom.length == searchHotelController.responseList.length){
+          searchHotelController.isLoading.value = false;
+          _progress = 101.0;
+        }
         setState(() {});
+      });
+    });
+  }
+
+  void _startProgress() {
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+        _progress += 0.1;
+        if (_progress < 100.0) {
+          _startProgress();
+        }
       });
     });
   }
@@ -115,7 +151,121 @@ class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> w
         ),
         body: Obx(() {
           if (searchHotelController.isLoading.value) {
-            return Center(child: CircularProgressIndicator());
+            return TabBarView(
+              controller: tabController,
+              children: widget.multiAccom.map((tab) {
+                var destination = searchHotelController.responseList.firstWhere((d) => d?.destination == tab.city, orElse: () => null);
+
+                // if (destination == null || destination.hotels == null) {
+                //   return Center(
+                //     child: Column(
+                //       mainAxisAlignment: MainAxisAlignment.center,
+                //       children: [
+                //         Image(height: 110, width: 110, image: AssetImage("assets/icons/no_location.png")),
+                //         SizedBox(height: 10),
+                //         Text("No Hotels available", style: const TextStyle(color: Colors.black26, fontSize: 20, fontWeight: FontWeight.w200)),
+                //       ],
+                //     ),
+                //   );
+                // }
+
+                Future.delayed(Duration(seconds: 1), () {
+                  _dpcontroller.animateToSelection();
+                });
+
+                // var hotels = destination.hotels;
+                return Column(
+                  children: [
+                    SizedBox(height: 8),
+                    Container(
+                      height: 55,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('CheckIn'),
+                          Expanded(
+                            child: DatePicker(
+                              DateTime.now(),
+                              controller: _dpcontroller,
+                              height: 30,
+                              width: 68,
+                              initialSelectedDate: DateTime.parse(tab.checkIn!),
+                              selectionColor: Colors.black,
+                              selectedTextColor: Colors.white,
+                              dayTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                              monthTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.w600),
+                              dateTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                              onDateChange: (date) {
+                                setState(() {
+                                  // //_selectedValue = date;
+                                  // widget.departDate = date
+                                  DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+                                  String dateString = dateFormat.format(date);
+                                  tab.checkIn = dateString;
+
+                                  // var req = tab.toJson();
+                                  // widget.dataMap = req;
+                                  // String jsonString = jsonEncode(widget.dataMap);
+                                  //
+                                  // bRequest = BookingRequest.fromJson(json.decode(jsonString));
+                                  fetch();
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Container(
+                      height: 55,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('CheckOut'),
+                          Expanded(
+                            child: DatePicker(
+                              DateTime.now(),
+                              controller: _dpcontroller,
+                              height: 30,
+                              width: 68,
+                              initialSelectedDate: DateTime.parse(tab.checkOut!),
+                              selectionColor: Colors.black,
+                              selectedTextColor: Colors.white,
+                              dayTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                              monthTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.w600),
+                              dateTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                              onDateChange: (date) {
+                                setState(() {
+                                  // //_selectedValue = date;
+                                  // widget.departDate = date
+                                  DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+                                  String dateString = dateFormat.format(date);
+                                  tab.checkOut = dateString;
+                                  // var req = bRequest.toJson();
+                                  // widget.dataMap = req;
+                                  // String jsonString = jsonEncode(widget.dataMap);
+                                  //
+                                  // bRequest = BookingRequest.fromJson(json.decode(jsonString));
+                                  fetch();
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    LinearProgressIndicator(
+                      value: _progress, // Only if determinate
+                      backgroundColor: Colors.grey[300],
+                      color: AppColors.appColorPrimary,
+                      minHeight: 5.0,
+                    ),
+                    SizedBox(height: 8),
+                  ],
+                );
+              }).toList(),
+            );
           } else {
             return TabBarView(
               controller: tabController,
@@ -135,9 +285,93 @@ class _MultipleSearchHotelScreenState extends State<MultipleSearchHotelScreen> w
                   );
                 }
 
+                Future.delayed(Duration(seconds: 2), () {
+                  _dpcontroller.animateToSelection();
+                });
+
                 var hotels = destination.hotels;
                 return Column(
                   children: [
+                    SizedBox(height: 8),
+                    Container(
+                      height: 55,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('CheckIn'),
+                          Expanded(
+                            child: DatePicker(
+                              DateTime.now(),
+                              controller: _dpcontroller,
+                              height: 30,
+                              width: 68,
+                              initialSelectedDate: DateTime.parse(bRequest.checkIn!),
+                              selectionColor: Colors.black,
+                              selectedTextColor: Colors.white,
+                              dayTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                              monthTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.w600),
+                              dateTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                              onDateChange: (date) {
+                                setState(() {
+                                  // //_selectedValue = date;
+                                  // widget.departDate = date
+                                  DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+                                  String dateString = dateFormat.format(date);
+                                  bRequest.checkIn = dateString;
+
+                                  var req = bRequest.toJson();
+                                  widget.dataMap = req;
+                                  String jsonString = jsonEncode(widget.dataMap);
+
+                                  bRequest = BookingRequest.fromJson(json.decode(jsonString));
+                                  fetch();
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Container(
+                      height: 55,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('CheckOut'),
+                          Expanded(
+                            child: DatePicker(
+                              DateTime.now(),
+                              controller: _dpcontroller,
+                              height: 30,
+                              width: 68,
+                              initialSelectedDate: DateTime.parse(bRequest.checkOut!),
+                              selectionColor: Colors.black,
+                              selectedTextColor: Colors.white,
+                              dayTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                              monthTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.w600),
+                              dateTextStyle: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                              onDateChange: (date) {
+                                setState(() {
+                                  // //_selectedValue = date;
+                                  // widget.departDate = date
+                                  DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+                                  String dateString = dateFormat.format(date);
+                                  bRequest.checkOut = dateString;
+                                  var req = bRequest.toJson();
+                                  widget.dataMap = req;
+                                  String jsonString = jsonEncode(widget.dataMap);
+
+                                  bRequest = BookingRequest.fromJson(json.decode(jsonString));
+                                  fetch();
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 8),
                     Expanded(
                       child: ListView.builder(
                         padding: EdgeInsets.all(10),

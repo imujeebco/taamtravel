@@ -1,0 +1,84 @@
+PODS:
+  - connectivity_plus (0.0.1):
+    - Flutter
+    - ReachabilitySwift
+  - Flutter (1.0.0)
+  - google_maps_flutter_ios (0.0.1):
+    - Flutter
+    - GoogleMaps (< 9.0)
+  - GoogleMaps (6.2.1):
+    - GoogleMaps/Maps (= 6.2.1)
+  - GoogleMaps/Base (6.2.1)
+  - GoogleMaps/Maps (6.2.1):
+    - GoogleMaps/Base
+  - libphonenumber_plugin (0.0.1):
+    - Flutter
+    - PhoneNumberKit
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - permission_handler_apple (9.1.1):
+    - Flutter
+  - PhoneNumberKit (3.7.11):
+    - PhoneNumberKit/PhoneNumberKitCore (= 3.7.11)
+    - PhoneNumberKit/UIKit (= 3.7.11)
+  - PhoneNumberKit/PhoneNumberKitCore (3.7.11)
+  - PhoneNumberKit/UIKit (3.7.11):
+    - PhoneNumberKit/PhoneNumberKitCore
+  - ReachabilitySwift (5.2.3)
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - url_launcher_ios (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
+  - Flutter (from `Flutter`)
+  - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
+  - libphonenumber_plugin (from `.symlinks/plugins/libphonenumber_plugin/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+
+SPEC REPOS:
+  trunk:
+    - GoogleMaps
+    - PhoneNumberKit
+    - ReachabilitySwift
+
+EXTERNAL SOURCES:
+  connectivity_plus:
+    :path: ".symlinks/plugins/connectivity_plus/ios"
+  Flutter:
+    :path: Flutter
+  google_maps_flutter_ios:
+    :path: ".symlinks/plugins/google_maps_flutter_ios/ios"
+  libphonenumber_plugin:
+    :path: ".symlinks/plugins/libphonenumber_plugin/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
+
+SPEC CHECKSUMS:
+  connectivity_plus: bf0076dd84a130856aa636df1c71ccaff908fa1d
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  google_maps_flutter_ios: d1318b4ff711612cab16862d7a87e31a7403d458
+  GoogleMaps: 20d7b12be49a14287f797e88e0e31bc4156aaeb4
+  libphonenumber_plugin: 48bf4078546377eedaab4aa54978cd0f6fa23072
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
+  PhoneNumberKit: ced55861269312a5e3bc2ef82a58d6255b1c976a
+  ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
+  shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
+  url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
+
+PODFILE CHECKSUM: 4bb0d5af7b0a7a18570b26cd09a55bf9a905f81f
+
+COCOAPODS: 1.15.2

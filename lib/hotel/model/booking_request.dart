@@ -23,7 +23,7 @@ class BookingRequest {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<dynamic, dynamic> toJson() {
     return {
       'checkIn': checkIn,
       'checkOut': checkOut,

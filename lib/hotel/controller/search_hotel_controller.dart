@@ -102,7 +102,7 @@ class SearchHotelController extends GetxController {
       print("Search Hotels Controller: ${response.body}");
 
       if (response.statusCode == 200) {
-        isLoading.value = false;
+        // isLoading.value = false;
         searchHotelModel.value.destination = destination;
         return searchHotelModel.value;
 
@@ -120,7 +120,7 @@ class SearchHotelController extends GetxController {
           AppColors.orange, Icons.warning_rounded));
       isLoading.value = false;
     } finally {
-      isLoading.value = false;
+      //isLoading.value = false;
     }
     return null;
   }

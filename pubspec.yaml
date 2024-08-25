@@ -63,6 +63,10 @@ dependencies:
   carousel_slider: ^4.2.1
   google_maps_flutter: ^2.5.3
   permission_handler: ^10.0.0
+  firebase_auth: ^4.16.0
+  google_sign_in: ^6.1.6
+  flutter_facebook_auth: ^7.0.1
+  date_picker_timeline: ^1.2.5
 
 
 dev_dependencies:
